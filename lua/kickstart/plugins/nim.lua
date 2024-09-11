@@ -1,0 +1,13 @@
+-- https://nim-lang.org/docs/tools.html
+  -- https://nim-lang.org/docs/nimsuggest.html
+  -- https://github.com/nim-lang/Nim/wiki/Editor-Support
+  -- https://github.com/alaviss/nim.nvim?tab=readme-ov-file
+  -- https://github.com/PMunch/nimlsp
+
+  -- {
+  --   'alaviss/nim.nvim',
+  --   config = function()
+  --     vim.opt.foldlevelstart = 99
+  --     vim.opt.foldmethod = 'manual'
+  --   end,
+  -- },
