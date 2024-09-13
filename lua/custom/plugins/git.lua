@@ -65,4 +65,43 @@ return {
       end,
     },
   },
+
+    --  Git fugitive mergetool + [git commands]
+  --  https://github.com/lewis6991/gitsigns.nvim
+  --  PR needed: Setup keymappings to move quickly when using this feature.
+  --
+  --  We only want this plugin to use it as mergetool like "git mergetool".
+  --  To enable this feature, add this  to your global .gitconfig:
+  --
+  --  [mergetool "fugitive"]
+  --  	cmd = nvim -c \"Gvdiffsplit!\" \"$MERGED\"
+  --  [merge]
+  --  	tool = fugitive
+  --  [mergetool]
+  --  	keepBackup = false
+  {
+    "tpope/vim-fugitive",
+    enabled = vim.fn.executable("git") == 1,
+    dependencies = { "tpope/vim-rhubarb" },
+    cmd = {
+      "Gvdiffsplit",
+      "Gdiffsplit",
+      "Gedit",
+      "Gsplit",
+      "Gread",
+      "Gwrite",
+      "Ggrep",
+      "GMove",
+      "GRename",
+      "GDelete",
+      "GRemove",
+      "GBrowse",
+      "Git",
+      "Gstatus",
+    },
+    config = function()
+      -- NOTE: On vim plugins we use config instead of opts.
+      vim.g.fugitive_no_maps = 1
+    end,
+  },
 }
