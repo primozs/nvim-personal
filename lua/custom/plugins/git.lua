@@ -1,18 +1,8 @@
--- Adds git related signs to the gutter, as well as utilities for managing changes
--- NOTE: gitsigns is already included in init.lua but contains only the base
--- config. This will add also the recommended keymaps.
-
+--  https://github.com/lewis6991/gitsigns.nvim
 return {
   {
     'lewis6991/gitsigns.nvim',
     opts = {
-      signs = {
-        add = { text = '+' },
-        change = { text = '~' },
-        delete = { text = '_' },
-        topdelete = { text = '‾' },
-        changedelete = { text = '~' },
-      },
       on_attach = function(bufnr)
         local gitsigns = require 'gitsigns'
 
@@ -40,37 +30,13 @@ return {
         end, { desc = 'Jump to previous git [c]hange' })
 
         -- Actions
-        -- visual mode
-        map('v', '<leader>hs', function()
-          gitsigns.stage_hunk { vim.fn.line '.', vim.fn.line 'v' }
-        end, { desc = 'stage git hunk' })
-        map('v', '<leader>hr', function()
-          gitsigns.reset_hunk { vim.fn.line '.', vim.fn.line 'v' }
-        end, { desc = 'reset git hunk' })
-        -- normal mode
-        map('n', '<leader>hs', gitsigns.stage_hunk, { desc = 'git [s]tage hunk' })
-        map('n', '<leader>hr', gitsigns.reset_hunk, { desc = 'git [r]eset hunk' })
-        map('n', '<leader>hS', gitsigns.stage_buffer, { desc = 'git [S]tage buffer' })
-        map('n', '<leader>hu', gitsigns.undo_stage_hunk, { desc = 'git [u]ndo stage hunk' })
-        map('n', '<leader>hR', gitsigns.reset_buffer, { desc = 'git [R]eset buffer' })
-        map('n', '<leader>hp', gitsigns.preview_hunk, { desc = 'git [p]review hunk' })
-        map('n', '<leader>hb', gitsigns.blame_line, { desc = 'git [b]lame line' })
-        map('n', '<leader>hd', gitsigns.diffthis, { desc = 'git [d]iff against index' })
-        map('n', '<leader>hD', function()
-          gitsigns.diffthis '@'
-        end, { desc = 'git [D]iff against last commit' })
+        map('n', '<leader>gcp', gitsigns.preview_hunk, { desc = 'git [p]review hunk' })
         -- Toggles
         map('n', '<leader>tb', gitsigns.toggle_current_line_blame, { desc = '[T]oggle git show [b]lame line' })
         map('n', '<leader>tD', gitsigns.toggle_deleted, { desc = '[T]oggle git show [D]eleted' })
       end,
     },
   },
-
-    --  Git fugitive mergetool + [git commands]
-  --  https://github.com/lewis6991/gitsigns.nvim
-  --  PR needed: Setup keymappings to move quickly when using this feature.
-  --
-  --  We only want this plugin to use it as mergetool like "git mergetool".
   --  To enable this feature, add this  to your global .gitconfig:
   --
   --  [mergetool "fugitive"]
@@ -80,28 +46,26 @@ return {
   --  [mergetool]
   --  	keepBackup = false
   {
-    "tpope/vim-fugitive",
-    enabled = vim.fn.executable("git") == 1,
-    dependencies = { "tpope/vim-rhubarb" },
-    cmd = {
-      "Gvdiffsplit",
-      "Gdiffsplit",
-      "Gedit",
-      "Gsplit",
-      "Gread",
-      "Gwrite",
-      "Ggrep",
-      "GMove",
-      "GRename",
-      "GDelete",
-      "GRemove",
-      "GBrowse",
-      "Git",
-      "Gstatus",
-    },
+    'tpope/vim-fugitive',
+    enabled = vim.fn.executable 'git' == 1,
+    dependencies = { 'tpope/vim-rhubarb' },
     config = function()
-      -- NOTE: On vim plugins we use config instead of opts.
-      vim.g.fugitive_no_maps = 1
+      vim.keymap.set("n", "<leader>gs", vim.cmd.Git, { desc = 'Git status' })
+      vim.keymap.set('n', '<leader>gB', ':GBrowse<CR>', { desc = 'Open in github' })
+      vim.keymap.set("n", "<leader>gL", ":Git log --graph --decorate<CR>", { desc = 'Git log' })
+      vim.keymap.set("n", "<leader>gl", ":Git log --graph --decorate --oneline<CR>", { desc = 'Git log one line' })
+
+      vim.keymap.set("n", "<leader>gd", "<cmd>diffget //2<CR>", { desc = 'Git diffget 2' })
+      vim.keymap.set("n", "<leader>gD", "<cmd>diffget //3<CR>", { desc = 'Git diffget 2' })
+
+      vim.keymap.set("n", "<leader>gp", function()
+        vim.cmd.Git('push')
+      end, { desc = 'Git push' })
+
+      -- rebase always
+      vim.keymap.set("n", "<leader>gP", function()
+          vim.cmd.Git({'pull',  '--rebase'})
+      end, { desc = 'Git pull rebase' })
     end,
   },
 }

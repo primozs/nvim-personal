@@ -43,7 +43,11 @@ return {
       --  and try some other statusline plugin
       local statusline = require 'mini.statusline'
       -- set use_icons to true if you have a Nerd Font
-      statusline.setup { use_icons = vim.g.have_nerd_font }
+      statusline.setup { 
+        -- use_icons = vim.g.have_nerd_font 
+        use_icons = true,
+        set_vim_settings = true,
+      }
 
       -- You can configure sections in the statusline by overriding their
       -- default behavior. For example, here we set the section for
@@ -70,7 +74,7 @@ return {
         "quickfix",
       },
       ignore = {
-        ft = { "lua", "markdown" }, -- ignore filetypes with bad code actions.
+        ft = { "lua", "markdown", "nim" }, -- ignore filetypes with bad code actions.
       },
       autocmd = {
         enabled = true,

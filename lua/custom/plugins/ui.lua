@@ -3,6 +3,9 @@ return {
     'folke/which-key.nvim',
     event = 'VimEnter', -- Sets the loading event to 'VimEnter'
     opts = {
+      delay = function(ctx)
+        return ctx.plugin and 0 or 1000
+      end,
       icons = {
         -- set icon mappings to true if you have a Nerd Font
         mappings = vim.g.have_nerd_font,
@@ -49,6 +52,22 @@ return {
         { '<leader>w', group = '[W]orkspace' },
         { '<leader>t', group = '[T]oggle' },
         { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
+        -- { '<leader>g', group = 'Git', mode = { 'n', 'v' } },
+      },
+    },
+    -- filter = function(mapping)
+    --   print(mapping)
+    --   -- example to exclude mappings without a description
+    --   -- return mapping.desc and mapping.desc ~= ""
+    --   return true
+    -- end,
+    keys = {
+      {
+        "<leader>?",
+        function()
+          require("which-key").show({ global = false })
+        end,
+        desc = "Buffer Local Keymaps (which-key)",
       },
     },
   },
@@ -143,9 +162,10 @@ return {
     event = "BufEnter",
     opts = {
       handlers = {
+        diagnostic = true,
         gitsigns = true, -- gitsigns integration (display hunks)
         ale = true,      -- lsp integration (display errors/warnings)
-        search = false,  -- hlslens integration (display search result)
+        search = true,  -- hlslens integration (display search result)
       },
       excluded_filetypes = {
         "cmp_docs",
@@ -191,35 +211,35 @@ return {
 
   --  LSP icons [icons]
   --  https://github.com/onsails/lspkind.nvim
-  {
-    "onsails/lspkind.nvim",
-    opts = {
-      mode = "symbol",
-      symbol_map = {
-        Array = "󰅪",
-        Boolean = "⊨",
-        Class = "󰌗",
-        Constructor = "",
-        Key = "󰌆",
-        Namespace = "󰅪",
-        Null = "NULL",
-        Number = "#",
-        Object = "󰀚",
-        Package = "󰏗",
-        Property = "",
-        Reference = "",
-        Snippet = "",
-        String = "󰀬",
-        TypeParameter = "󰊄",
-        Unit = "",
-      },
-      menu = {},
-    },
-    enabled = true,
-    config = function(_, opts)
-      require("lspkind").init(opts)
-    end,
-  },
+  -- {
+  --   "onsails/lspkind.nvim",
+  --   opts = {
+  --     -- mode = "symbol",
+  --     -- symbol_map = {
+  --     --   Array = "󰅪",
+  --     --   Boolean = "⊨",
+  --     --   Class = "󰌗",
+  --     --   Constructor = "",
+  --     --   Key = "󰌆",
+  --     --   Namespace = "󰅪",
+  --     --   Null = "NULL",
+  --     --   Number = "#",
+  --     --   Object = "󰀚",
+  --     --   Package = "󰏗",
+  --     --   Property = "",
+  --     --   Reference = "",
+  --     --   Snippet = "",
+  --     --   String = "󰀬",
+  --     --   TypeParameter = "󰊄",
+  --     --   Unit = "",
+  --     -- },
+  --     -- menu = {},
+  --   },
+  --   enabled = true,
+  --   config = function(_, opts)
+  --     require("lspkind").init(opts)
+  --   end,
+  -- },
 
   -- {
   --   "kevinhwang91/nvim-ufo",
@@ -319,17 +339,9 @@ return {
     { 'nvim-tree/nvim-web-devicons', enabled = vim.g.have_nerd_font },
   },
   config = function()
-    -- Telescope is a fuzzy finder that comes with a lot of different things that
-    -- it can fuzzy find! It's more than just a "file finder", it can search
-    -- many different aspects of Neovim, your workspace, LSP, and more!
-    --
     -- The easiest way to use Telescope, is to start by doing something like:
     --  :Telescope help_tags
-    --
-    -- After running this command, a window will open up and you're able to
-    -- type in the prompt window. You'll see a list of `help_tags` options and
-    -- a corresponding preview of the help.
-    --
+
     -- Two important keymaps to use while in Telescope are:
     --  - Insert mode: <c-/>
     --  - Normal mode: ?

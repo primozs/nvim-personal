@@ -19,17 +19,20 @@ vim.g.maplocalleader = ' '
 -- Set to true if you have a Nerd Font installed and selected in the terminal
 vim.g.have_nerd_font = true
 
+vim.opt.spelllang = 'en_us'
+vim.opt.spell = true
+
 -- Make line numbers default
 vim.opt.number = true
 vim.opt.relativenumber = true
 vim.opt.wrap = false
 
-vim.opt.foldcolumn = "2"
+vim.opt.foldcolumn = '2'
 vim.opt.foldlevel = 99
 vim.opt.foldlevelstart = 99 -- Start with all code unfolded.
 vim.opt.foldenable = true
 vim.opt.foldnestmax = 2
-vim.opt.fillchars = { eob = " ", fold = " " ,foldopen = "▽" ,foldclose = "▷", foldsep="│"}
+vim.opt.fillchars = { eob = ' ', fold = ' ', foldopen = '▽', foldclose = '▷', foldsep = '│' }
 vim.opt.foldmethod = 'indent'
 
 -- Enable mouse mode, can be useful for resizing splits for example!
@@ -94,20 +97,23 @@ vim.opt.scrolloff = 10
 --  See `:help hlsearch`
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
--- tmux sessionizer
 vim.keymap.set('n', '<C-f>', '<cmd>!tmux neww tmux-sessionizer<CR>', { noremap = true, silent = true })
 vim.keymap.set('n', '<C-s>', '<cmd>w<CR>', { noremap = true })
--- vim.keymap.set('n', '<C-q>', '<cmd>q<CR>', { noremap = true })
-vim.keymap.set('n', '<C-q>', '<C-w>q', { noremap = true })
+vim.keymap.set('n', '<C-q>', '<cmd>q<CR>', { noremap = true })
+-- vim.keymap.set('n', '<C-q>', '<C-w>q', { noremap = true })
 vim.keymap.set('n', '<leader>e', '<cmd>Vex<CR>', { noremap = true })
+-- vim.keymap.set('n', '\\', '<cmd>Rexplore<CR>', { noremap = true })
 vim.keymap.set('n', '<leader>vr', '<cmd>so ~/.config/nvim/init.lua<CR>', { noremap = true, silent = true })
 vim.keymap.set('n', '<TAB>', '>>', { noremap = true, silent = true })
 vim.keymap.set('n', '<S-TAB>', '<<', { noremap = true, silent = true })
-vim.keymap.set('x', '<C-I>', '<leader>f', { noremap = true, silent = true })
 
-vim.keymap.set('x', '<C-A>', 'gcc', { noremap = true })
+-- vim.keymap.set('x', '<C-I>', '<leader>f', { noremap = true, silent = true })
+-- vim.keymap.set('x', '<C-A>', 'gcc', { noremap = true })
 
--- vim.keymap.set({ 'v' }, '<C-a>', [[gc]])
+vim.keymap.set('v', 'J', ":m '>+1<CR>gv=gv", { desc = 'Move line down' })
+vim.keymap.set('v', 'K', ":m '<-2<CR>gv=gv", { desc = 'Move line up' })
+vim.keymap.set('n', '<leader>zig', '<cmd>LspRestart<cr>')
+
 vim.keymap.set('x', '<leader>p', [["_dP]])
 vim.keymap.set('n', '<leader>Y', [["+Y]])
 vim.keymap.set({ 'n', 'v' }, '<leader>d', [["_d]])
@@ -165,22 +171,11 @@ end ---@diagnostic disable-next-line: undefined-field
 vim.opt.rtp:prepend(lazypath)
 
 require('lazy').setup({
-  
-
-  -- NOTE: Plugins can also be configured to run Lua code when they are loaded.
-  --
-  -- This is often very useful to both group configuration, as well as handle
-  -- lazy loading plugins that don't need to be loaded immediately at startup.
-  --
   -- For example, in the following configuration, we use:
   --  event = 'VimEnter'
   --
-  -- which loads which-key before all the UI elements are loaded. Events can be
+  -- which loads before all the UI elements are loaded. Events can be
   -- normal autocommands events (`:help autocmd-events`).
-  --
-  -- Then, because we use the `config` key, the configuration only runs
-  -- after the plugin has been loaded:
-  --  config = function() ... end
 
   -- LSP Plugins
   {
@@ -197,6 +192,10 @@ require('lazy').setup({
 
       -- Allows extra capabilities provided by nvim-cmp
       'hrsh7th/cmp-nvim-lsp',
+      'hrsh7th/cmp-buffer',
+      'hrsh7th/cmp-path',
+      'hrsh7th/cmp-cmdline',
+      'hrsh7th/nvim-cmp',
     },
     config = function()
       -- and elegantly composed help section, `:help lsp-vs-treesitter`
@@ -246,6 +245,8 @@ require('lazy').setup({
           -- Rename the variable under your cursor.
           --  Most Language Servers support renaming across files, etc.
           map('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
+
+          map('gh', vim.lsp.buf.hover, 'Code hint')
 
           -- Execute a code action, usually your cursor needs to be on top of an error
           -- or a suggestion from your LSP for this to activate.
@@ -324,14 +325,14 @@ require('lazy').setup({
         --
         -- But for many setups, the LSP (`tsserver`) will work just fine
         ts_ls = {}, -- tsserver
-
+        volar = {},
         -- https://github.com/nim-lang/langserver
-        -- nimls = {},
-        nim_langserver = {
-          -- root_dir = function(fname)
-          --   return util.root_pattern '*.nimble'(fname) or util.find_git_ancestor(fname)
-          -- end,
-        },
+        nimls = {},
+        -- nim_langserver = {
+        -- root_dir = function(fname)
+        --   return util.root_pattern '*.nimble'(fname) or util.find_git_ancestor(fname)
+        -- end,
+        -- },
         bashls = {},
         cmake = {},
         cssls = {},
@@ -475,9 +476,9 @@ require('lazy').setup({
           return 'make install_jsregexp'
         end)(),
         dependencies = {
-          "rafamadriz/friendly-snippets",
-          "zeioth/NormalSnippets",
-          "benfowler/telescope-luasnip.nvim",
+          'rafamadriz/friendly-snippets',
+          'zeioth/NormalSnippets',
+          'benfowler/telescope-luasnip.nvim',
           -- `friendly-snippets` contains a variety of premade snippets.
           --    See the README about individual language/framework/plugin snippets:
           --    https://github.com/rafamadriz/friendly-snippets
@@ -490,31 +491,32 @@ require('lazy').setup({
         },
         opts = {
           history = true,
-          delete_check_events = "TextChanged",
-          region_check_events = "CursorMoved",
+          delete_check_events = 'TextChanged',
+          region_check_events = 'CursorMoved',
         },
         config = function(_, opts)
-          if opts then require("luasnip").config.setup(opts) end
-          vim.tbl_map(
-            function(type) require("luasnip.loaders.from_" .. type).lazy_load() end,
-            { "vscode", "snipmate", "lua" }
-          )
+          if opts then
+            require('luasnip').config.setup(opts)
+          end
+          vim.tbl_map(function(type)
+            require('luasnip.loaders.from_' .. type).lazy_load()
+          end, { 'vscode', 'snipmate', 'lua' })
           -- friendly-snippets - enable standardized comments snippets
-          require("luasnip").filetype_extend("typescript", { "tsdoc" })
-          require("luasnip").filetype_extend("javascript", { "jsdoc" })
-          require("luasnip").filetype_extend("lua", { "luadoc" })
-          require("luasnip").filetype_extend("python", { "pydoc" })
-          require("luasnip").filetype_extend("rust", { "rustdoc" })
-          require("luasnip").filetype_extend("cs", { "csharpdoc" })
-          require("luasnip").filetype_extend("java", { "javadoc" })
-          require("luasnip").filetype_extend("c", { "cdoc" })
-          require("luasnip").filetype_extend("cpp", { "cppdoc" })
-          require("luasnip").filetype_extend("kotlin", { "kdoc" })
-          require("luasnip").filetype_extend("sh", { "shelldoc" })
-        end
+          require('luasnip').filetype_extend('typescript', { 'tsdoc' })
+          require('luasnip').filetype_extend('javascript', { 'jsdoc' })
+          require('luasnip').filetype_extend('lua', { 'luadoc' })
+          require('luasnip').filetype_extend('python', { 'pydoc' })
+          require('luasnip').filetype_extend('rust', { 'rustdoc' })
+          require('luasnip').filetype_extend('cs', { 'csharpdoc' })
+          require('luasnip').filetype_extend('java', { 'javadoc' })
+          require('luasnip').filetype_extend('c', { 'cdoc' })
+          require('luasnip').filetype_extend('cpp', { 'cppdoc' })
+          require('luasnip').filetype_extend('kotlin', { 'kdoc' })
+          require('luasnip').filetype_extend('sh', { 'shelldoc' })
+        end,
       },
       'saadparwaiz1/cmp_luasnip',
-      "hrsh7th/cmp-buffer",
+      'hrsh7th/cmp-buffer',
       -- Adds other completion capabilities.
       --  nvim-cmp does not ship with all sources by default. They are split
       --  into multiple repos for maintenance purposes.
@@ -526,7 +528,6 @@ require('lazy').setup({
       local cmp = require 'cmp'
       local luasnip = require 'luasnip'
       luasnip.config.setup {}
-      local lspkind = require("lspkind")
 
       cmp.setup {
         snippet = {
@@ -537,9 +538,7 @@ require('lazy').setup({
         completion = { completeopt = 'menu,menuone,noinsert' },
 
         -- For an understanding of why these mappings were
-        -- chosen, you will need to read `:help ins-completion`
-        --
-        -- No, but seriously. Please read `:help ins-completion`, it is really good!
+        -- chosen, you will need to read `:help ins-completion`    
         mapping = cmp.mapping.preset.insert {
           -- Select the [n]ext item
           ['<C-n>'] = cmp.mapping.select_next_item(),
@@ -553,11 +552,11 @@ require('lazy').setup({
           -- Accept ([y]es) the completion.
           --  This will auto-import if your LSP supports it.
           --  This will expand snippets if the LSP sent a snippet.
-          ['<CR>'] = cmp.mapping.confirm { select = true },
+          -- ['<C-y>'] = cmp.mapping.confirm { select = true },
 
           -- If you prefer more traditional completion keymaps,
           -- you can uncomment the following lines
-          --['<CR>'] = cmp.mapping.confirm { select = true },
+          ['<CR>'] = cmp.mapping.confirm { select = true },
           --['<Tab>'] = cmp.mapping.select_next_item(),
           --['<S-Tab>'] = cmp.mapping.select_prev_item(),
 
@@ -594,10 +593,10 @@ require('lazy').setup({
             -- set group index to 0 to skip loading LuaLS completions as lazydev recommends it
             group_index = 0,
           },
-          { name = "nvim_lsp", priority = 1000 },
-          { name = "luasnip",  priority = 750 },
-          { name = "buffer",   priority = 500 },
-          { name = "path",     priority = 250 },
+          { name = 'nvim_lsp', priority = 1000 },
+          { name = 'luasnip', priority = 750 },
+          { name = 'buffer', priority = 500 },
+          { name = 'path', priority = 250 },
         },
       }
     end,
@@ -607,6 +606,10 @@ require('lazy').setup({
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
     main = 'nvim-treesitter.configs', -- Sets main module to use for opts
+    dependencies = {
+      -- https://github.com/nvim-treesitter/nvim-treesitter-context
+      'nvim-treesitter/nvim-treesitter-context'
+    },
     -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
     -- https://github.com/nvim-treesitter/nvim-treesitter/#adding-parsers
     -- https://github.com/alaviss/tree-sitter-nim
@@ -659,16 +662,20 @@ require('lazy').setup({
         -- Some languages depend on vim's regex highlighting system (such as Ruby) for indent rules.
         --  If you are experiencing weird indenting issues, add the language to
         --  the list of additional_vim_regex_highlighting and disabled languages for indent.
-        additional_vim_regex_highlighting = { 'ruby' },
+        additional_vim_regex_highlighting = { 'markdown' },
       },
-      indent = { enable = true, disable = { 'ruby' } },
+      indent = {
+        enable = true,
+        disable = {
+          -- 'ruby'
+        },
+      },
       context = { enable = true },
     },
     -- There are additional nvim-treesitter modules that you can use to interact
     -- with nvim-treesitter. You should go explore a few and see what interests you:
     --
     --    - Incremental selection: Included, see `:help nvim-treesitter-incremental-selection-mod`
-    --    - Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
     --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
   },
 

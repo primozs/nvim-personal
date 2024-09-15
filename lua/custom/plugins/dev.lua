@@ -11,9 +11,7 @@ return {
       },
     },
   },
-  
   { 'Bilal2453/luvit-meta', lazy = true },
-  
   {
     'pmizio/typescript-tools.nvim',
     dependencies = { 'nvim-lua/plenary.nvim', 'neovim/nvim-lspconfig' },
@@ -40,20 +38,20 @@ return {
   -- https://github.com/windwp/nvim-ts-autotag
   -- Adds support for HTML tags to the plugin nvim-autopairs.
   {
-    "windwp/nvim-ts-autotag",
-    event = "InsertEnter",
+    'windwp/nvim-ts-autotag',
+    event = 'InsertEnter',
     dependencies = {
-      "nvim-treesitter/nvim-treesitter",
-      "windwp/nvim-autopairs"
+      'nvim-treesitter/nvim-treesitter',
+      'windwp/nvim-autopairs',
     },
-    opts = {}
+    opts = {},
   },
 
   -- lsp_signature.nvim [auto params help]
   -- https://github.com/ray-x/lsp_signature.nvim
   {
-    "ray-x/lsp_signature.nvim",
-    event = "BufEnter",
+    'ray-x/lsp_signature.nvim',
+    event = 'BufEnter',
     opts = function()
       -- Apply globals from 1-options.lua
       local is_enabled = true
@@ -62,18 +60,20 @@ return {
       return {
         -- Window mode
         floating_window = is_enabled, -- Display it as floating window.
-        hi_parameter = "IncSearch",   -- Color to highlight floating window.
+        hi_parameter = 'IncSearch', -- Color to highlight floating window.
         handler_opts = round_borders, -- Window style
 
         -- Hint mode
         hint_enable = false, -- Display it as hint.
-        hint_prefix = "👈 ",
+        hint_prefix = '👈 ',
 
         -- Additionally, you can use <space>uH to toggle inlay hints.
-        toggle_key_flip_floatwin_setting = is_enabled
+        toggle_key_flip_floatwin_setting = is_enabled,
       }
     end,
-    config = function(_, opts) require('lsp_signature').setup(opts) end
+    config = function(_, opts)
+      require('lsp_signature').setup(opts)
+    end,
   },
 
   {
@@ -82,45 +82,45 @@ return {
     dependencies = {
       'RishabhRD/popfix',
     },
-    init = function ()
+    init = function()
       vim.g.cheat_default_window_layout = 'vertical_split'
-      vim.keymap.set('n', '<leader>ch', '<cmd>Cheat<CR>', { noremap = true, silent = true })    
-    end
+      vim.keymap.set('n', '<leader>ch', '<cmd>Cheat<CR>', { noremap = true, silent = true })
+    end,
   },
 
   --  compiler.nvim [compiler]
   --  https://github.com/zeioth/compiler.nvim
   {
     'primozs/compiler.nvim',
-    branch = "nim",
+    branch = 'nim',
     -- "zeioth/compiler.nvim",
     -- https://lazy.folke.io/spec
     -- dir = "~/Documents/DEVELOPMENT/compiler.nvim",
     -- dev = true,
     cmd = {
-      "CompilerOpen",
-      "CompilerToggleResults",
-      "CompilerRedo",
-      "CompilerStop"
+      'CompilerOpen',
+      'CompilerToggleResults',
+      'CompilerRedo',
+      'CompilerStop',
     },
     dependencies = { 'stevearc/overseer.nvim', 'nvim-telescope/telescope.nvim' },
     opts = {},
-    init = function ()
-        -- Open compiler
-        vim.api.nvim_set_keymap('n', '<F6>', '<cmd>CompilerOpen<cr>', { noremap = true, silent = true })
+    init = function()
+      -- Open compiler
+      vim.api.nvim_set_keymap('n', '<F6>', '<cmd>CompilerOpen<cr>', { noremap = true, silent = true })
 
-        -- Redo last selected option
-        vim.api.nvim_set_keymap(
-          'n',
-          '<S-F6>',
-          '<cmd>CompilerStop<cr>' -- (Optional, to dispose all tasks before redo)
-            .. '<cmd>CompilerRedo<cr>',
-          { noremap = true, silent = true }
-        )
+      -- Redo last selected option
+      vim.api.nvim_set_keymap(
+        'n',
+        '<S-F6>',
+        '<cmd>CompilerStop<cr>' -- (Optional, to dispose all tasks before redo)
+          .. '<cmd>CompilerRedo<cr>',
+        { noremap = true, silent = true }
+      )
 
-        -- Toggle compiler results
-        vim.api.nvim_set_keymap('n', '<S-F7>', '<cmd>CompilerToggleResults<cr>', { noremap = true, silent = true })      
-    end
+      -- Toggle compiler results
+      vim.api.nvim_set_keymap('n', '<S-F7>', '<cmd>CompilerToggleResults<cr>', { noremap = true, silent = true })
+    end,
   },
 
   --  overseer [task runner]
@@ -128,25 +128,25 @@ return {
   --  If you need to close a task immediately:
   --  press ENTER in the output menu on the task you wanna close.
   {
-    "stevearc/overseer.nvim",
+    'stevearc/overseer.nvim',
     cmd = {
-      "OverseerOpen",
-      "OverseerClose",
-      "OverseerToggle",
-      "OverseerSaveBundle",
-      "OverseerLoadBundle",
-      "OverseerDeleteBundle",
-      "OverseerRunCmd",
-      "OverseerRun",
-      "OverseerInfo",
-      "OverseerBuild",
-      "OverseerQuickAction",
-      "OverseerTaskAction",
-      "OverseerClearCache"
+      'OverseerOpen',
+      'OverseerClose',
+      'OverseerToggle',
+      'OverseerSaveBundle',
+      'OverseerLoadBundle',
+      'OverseerDeleteBundle',
+      'OverseerRunCmd',
+      'OverseerRun',
+      'OverseerInfo',
+      'OverseerBuild',
+      'OverseerQuickAction',
+      'OverseerTaskAction',
+      'OverseerClearCache',
     },
     opts = {
-     task_list = { -- the window that shows the results.
-        direction = "bottom",
+      task_list = { -- the window that shows the results.
+        direction = 'bottom',
         min_height = 25,
         max_height = 25,
         default_detail = 1,
@@ -165,71 +165,110 @@ return {
     },
   },
 
-  --  TESTING -----------------------------------------------------------------
-  --  Run tests inside of nvim [unit testing]
-  --  https://github.com/nvim-neotest/neotest
-  --
-  --
-  --  MANUAL:
-  --  -- Unit testing:
-  --  To tun an unit test you can run any of these commands:
-  --
-  --    :Neotest run      -- Runs the nearest test to the cursor.
-  --    :Neotest stop     -- Stop the nearest test to the cursor.
-  --    :Neotest run file -- Run all tests in the file.
-  --
-  --  -- E2e and Test Suite
-  --  Normally you will prefer to open your e2e framework GUI outside of nvim.
-  --  But you have the next commands in ../base/3-autocmds.lua:
-  --
-  --    :TestNodejs    -- Run all tests for this nodejs project.
-  --    :TestNodejsE2e -- Run the e2e tests/suite for this nodejs project.
-  -- 
+  -- Run tests inside of nvim [unit testing]
+  -- https://github.com/nvim-neotest/neotest
   -- https://github.com/vim-test/vim-test/
-  -- {
-  --   "nvim-neotest/neotest",
-  --   cmd = { "Neotest" },
-  --   dependencies = {
-  --     -- "sidlatau/neotest-dart",
-  --     -- "Issafalcon/neotest-dotnet",
-  --     "fredrikaverpil/neotest-golang",
-  --     -- "rcasia/neotest-java",
-  --     "nvim-neotest/neotest-jest",
-  --     "nvim-neotest/neotest-python",
-  --     "rouge8/neotest-rust",
-  --     "nvim-neotest/neotest-plenary",
-  --     "lawrence-laz/neotest-zig",
-  --     "nvim-neotest/nvim-nio"
-  --   },
-  --   opts = function()
-  --     return {
-  --       -- your neotest config here
-  --       adapters = {
-  --         -- require("neotest-dart"),
-  --         -- require("neotest-dotnet"),
-  --         require("neotest-golang"),
-  --         -- require("neotest-java"),
-  --         require("neotest-jest"),
-  --         require("neotest-python"),
-  --         require("neotest-rust"),
-  --         require("neotest-plenary"),
-  --         require("neotest-zig"),
-  --       },
-  --     }
-  --   end,
-  --   config = function(_, opts)
-  --     -- get neotest namespace (api call creates or returns namespace)
-  --     local neotest_ns = vim.api.nvim_create_namespace "neotest"
-  --     vim.diagnostic.config({
-  --       virtual_text = {
-  --         format = function(diagnostic)
-  --           local message = diagnostic.message:gsub("\n", " "):gsub("\t", " "):gsub("%s+", " "):gsub("^%s+", "")
-  --           return message
-  --         end,
-  --       },
-  --     }, neotest_ns)
-  --     require("neotest").setup(opts)
-  --   end,
-  -- },
-  {'vim-test/vim-test'}
+  { 'vim-test/vim-test' },
+
+  -- https://github.com/folke/trouble.nvim
+  {
+    'folke/trouble.nvim',
+    config = function()
+      require('trouble').setup {
+        icons = false,
+      }
+
+      vim.keymap.set('n', '<leader>tt', function()
+        require('trouble').toggle()
+      end)
+
+      vim.keymap.set('n', '[t', function()
+        require('trouble').next { skip_groups = true, jump = true }
+      end,
+      { desc = 'Previous trouble' })
+
+      vim.keymap.set('n', ']t', function()
+        require('trouble').previous { skip_groups = true, jump = true }
+      end,
+      { desc = 'Next trouble' })
+    end,
+  },
+
+  {
+    'ThePrimeagen/harpoon',
+    branch = 'harpoon2',
+    dependencies = { 'nvim-lua/plenary.nvim' },
+    config = function()
+      local harpoon = require 'harpoon'
+
+      harpoon:setup()
+
+      -- basic telescope configuration
+      -- local conf = require("telescope.config").values
+      -- local function toggle_telescope(harpoon_files)
+      --     local file_paths = {}
+      --     for _, item in ipairs(harpoon_files.items) do
+      --         table.insert(file_paths, item.value)
+      --     end
+
+      --     require("telescope.pickers").new({}, {
+      --         prompt_title = "Harpoon",
+      --         finder = require("telescope.finders").new_table({
+      --             results = file_paths,
+      --         }),
+      --         previewer = conf.file_previewer({}),
+      --         sorter = conf.generic_sorter({}),
+      --     }):find()
+      -- end
+
+      vim.keymap.set('n', '<leader>a', function()
+        harpoon:list():add()
+      end, { desc = 'Harpoon list add' })
+      -- vim.keymap.set("n", "<C-e>", function() toggle_telescope(harpoon:list()) end, { desc = "Harpoon open" })
+      vim.keymap.set('n', '<C-e>', function()
+        harpoon.ui:toggle_quick_menu(harpoon:list())
+      end, { desc = 'Harpoon open' })
+
+      vim.keymap.set('n', '<S-H>', function()
+        harpoon:list():select(1)
+      end, { desc = 'Harpoon 1' })
+      vim.keymap.set('n', '<S-J>', function()
+        harpoon:list():select(2)
+      end, { desc = 'Harpoon 2' })
+      vim.keymap.set('n', '<S-K>', function()
+        harpoon:list():select(3)
+      end, { desc = 'Harpoon 3' })
+      vim.keymap.set('n', '<S-L>', function()
+        harpoon:list():select(4)
+      end, { desc = 'Harpoon 4' })
+      vim.keymap.set('n', '<leader><S-H>', function()
+        harpoon:list():replace_at(1)
+      end, { desc = 'Harpoon add 1' })
+      vim.keymap.set('n', '<leader><S-J>', function()
+        harpoon:list():replace_at(2)
+      end, { desc = 'Harpoon add 2' })
+      vim.keymap.set('n', '<leader><S-K>', function()
+        harpoon:list():replace_at(3)
+      end, { desc = 'Harpoon add 3' })
+      vim.keymap.set('n', '<leader><S-L>', function()
+        harpoon:list():replace_at(4)
+      end, { desc = 'Harpoon add 4' })
+
+      harpoon:extend {
+        UI_CREATE = function(cx)
+          vim.keymap.set('n', '<C-V>', function()
+            harpoon.ui:select_menu_item { vsplit = true }
+          end, { buffer = cx.bufnr })
+
+          vim.keymap.set('n', '<C-S>', function()
+            harpoon.ui:select_menu_item { split = true }
+          end, { buffer = cx.bufnr })
+
+          vim.keymap.set('n', '<C-t>', function()
+            harpoon.ui:select_menu_item { tabedit = true }
+          end, { buffer = cx.bufnr })
+        end,
+      }
+    end,
+  },
 }
