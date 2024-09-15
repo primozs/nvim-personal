@@ -1,23 +1,47 @@
--- debug.lua
---
--- Shows how to use the DAP plugin to debug your code.
-return {
-  -- NOTE: Yes, you can install new plugins here!
-  'mfussenegger/nvim-dap',
-  -- NOTE: And you can specify dependencies as well
-  dependencies = {
-    -- Creates a beautiful debugger UI
-    'rcarriga/nvim-dap-ui',
+--  DEBUGGER ----------------------------------------------------------------
+-- https://github.com/puremourning/vimspector
+-- https://github.com/puremourning/vimspector?tab=readme-ov-file#install-some-gadgets
+-- https://microsoft.github.io/debug-adapter-protocol/implementors/adapters/
+-- https://github.com/vadimcn/codelldb
 
+-- vim.g.vimspector_install_gadgets = {'debugpy', 'vscode-cpptools', 'CodeLLDB'}
+-- vim.g.vimspector_enable_mappings = 'HUMAN'
+-- vim.keymap.set('n', '<Leader>di', '<Plug>VimspectorBalloonEval', {desc="Debug inspect"})
+-- vim.keymap.set('x', '<Leader>di', '<Plug>VimspectorBalloonEval', {desc="Debug inspect"})
+
+-- return {
+--   'puremourning/vimspector'
+-- }
+
+--  Debugger alternative to vim-inspector [debugger]
+--  https://github.com/mfussenegger/nvim-dap
+--  Here we configure the adapter+config of every debugger.
+--  Debuggers don't have system dependencies, you just install them with mason.
+--  We currently ship most of them with nvim.
+
+-- nvim-dap-ui [dap ui]
+-- https://github.com/mfussenegger/nvim-dap-ui
+-- user interface for the debugger dap
+
+-- https://github.com/jay-babu/mason-nvim-dap.nvim/blob/main/lua/mason-nvim-dap/mappings/source.lua
+return {
+  'mfussenegger/nvim-dap',
+  dependencies = {
+    'rcarriga/nvim-dap-ui',
+    'theHamsta/nvim-dap-virtual-text',
     -- Required dependency for nvim-dap-ui
     'nvim-neotest/nvim-nio',
-
+    "rcarriga/cmp-dap",
     -- Installs the debug adapters for you
     'williamboman/mason.nvim',
+    "jbyuki/one-small-step-for-vimkind",
     'jay-babu/mason-nvim-dap.nvim',
+    "nvim-java/nvim-java",
 
     -- Add your own debuggers here
     'leoluz/nvim-dap-go',
+    'mfussenegger/nvim-dap-python'
+    
   },
   keys = function(_, keys)
     local dap = require 'dap'
@@ -37,7 +61,7 @@ return {
         desc = 'Debug: Set Breakpoint',
       },
       -- Toggle to see last session result. Without this, you can't see session output in case of unhandled exception.
-      { '<F7>', dapui.toggle, desc = 'Debug: See last session result.' },
+      { '<F4>', dapui.toggle, desc = 'Debug: See last session result.' },
       unpack(keys),
     }
   end,
@@ -45,6 +69,7 @@ return {
     local dap = require 'dap'
     local dapui = require 'dapui'
 
+    require("nvim-dap-virtual-text").setup()
     require('mason-nvim-dap').setup {
       -- Makes a best effort to setup the various debuggers with
       -- reasonable debug configurations
@@ -59,6 +84,15 @@ return {
       ensure_installed = {
         -- Update this to ensure that you have the debuggers for the langs you want
         'delve',
+        'python',
+        'cppdbg',
+        'node2',
+        'chrome',
+        'js',
+        'coreclr',
+        'codelldb',
+        'dart',
+        'javadbg'
       },
     }
 
@@ -82,6 +116,7 @@ return {
           disconnect = '⏏',
         },
       },
+      floating = { border = "rounded" }
     }
 
     dap.listeners.after.event_initialized['dapui_config'] = dapui.open
@@ -96,144 +131,137 @@ return {
         detached = vim.fn.has 'win32' == 0,
       },
     }
+
+    -- adapters
+    -- https://github.com/mfussenegger/nvim-dap/wiki/Debug-Adapter-installation
+    -- https://github.com/jay-babu/mason-nvim-dap.nvim
+    dap.adapters.codelldb = {
+      type = 'server',
+      port = "${port}",
+      executable = {
+        command = vim.fn.stdpath('data') .. '/mason/bin/codelldb',
+        args = { "--port", "${port}" },
+        detached = function() if is_windows then return false else return true end end,
+      }
+    }
+    
+    dap.adapters.cppdbg = {
+      id = 'cppdbg',
+      type = 'executable',
+      command = vim.fn.stdpath('data') .. '/mason/bin/cppdbg',
+      args = { "--port", "${port}" },
+      detached = function() if is_windows then return false else return true end end,
+    }
+
+    dap.adapters.gdb = {
+      type = "executable",
+      command = "gdb",
+      args = { "--interpreter=dap", "--eval-command", "set print pretty on" }
+    }
+
+    dap.adapters.nlua = function(callback, config)
+      callback({ type = 'server', host = config.host or "127.0.0.1", port = config.port or 8086 })
+    end
+
+    dap.configurations.nim = {
+      {
+        name = 'Launch',
+        type = 'codelldb',
+        request = 'launch',
+        program = function() -- Ask the user what executable wants to debug
+          return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/bin/program', 'file')
+        end,
+        cwd = '${workspaceFolder}',
+        stopOnEntry = false,
+        args = {},
+      },
+    }
+    dap.configurations.c = {
+      {
+        name = 'Launch',
+        type = 'codelldb',
+        request = 'launch',
+        program = function() -- Ask the user what executable wants to debug
+          return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/bin/program', 'file')
+        end,
+        cwd = '${workspaceFolder}',
+        stopOnEntry = false,
+        args = {},
+      },
+    }
+    dap.configurations.cpp = {
+      {
+        name = "Launch file",
+        type = "codelldb",
+        request = "launch",
+        program = function()
+          return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/bin/program', 'file')
+        end,
+        cwd = '${workspaceFolder}',
+        stopAtEntry = true,
+      },
+      -- {
+      --   name = "Launch",
+      --   type = "gdb",
+      --   request = "launch",
+      --   program = function()
+      --     return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/bin/program', 'file')
+      --   end,
+      --   cwd = "${workspaceFolder}",
+      --   stopAtBeginningOfMainSubprogram = false,
+      -- },
+    }
+
+    dap.configurations.lua = {
+      {
+        type = 'nlua',
+        request = 'attach',
+        name = "Attach to running Neovim instance",
+        program = function() pcall(require "osv".launch({ port = 8086 })) end,
+      }
+    }
+
+    dap.configurations.rust = {
+      {
+        name = 'Launch',
+        type = 'codelldb',
+        request = 'launch',
+        program = function() -- Ask the user what executable wants to debug
+          return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/bin/program', 'file')
+        end,
+        cwd = '${workspaceFolder}',
+        stopOnEntry = false,
+        args = {},
+        initCommands = function() -- add rust types support (optional)
+          -- Find out where to look for the pretty printer Python module
+          local rustc_sysroot = vim.fn.trim(vim.fn.system('rustc --print sysroot'))
+
+          local script_import = 'command script import "' .. rustc_sysroot .. '/lib/rustlib/etc/lldb_lookup.py"'
+          local commands_file = rustc_sysroot .. '/lib/rustlib/etc/lldb_commands'
+
+          local commands = {}
+          local file = io.open(commands_file, 'r')
+          if file then
+            for line in file:lines() do
+              table.insert(commands, line)
+            end
+            file:close()
+          end
+          table.insert(commands, 1, script_import)
+
+          return commands
+        end,
+      }
+    }
   end,
 }
 
-
-
--- --  DEBUGGER ----------------------------------------------------------------
---   --  Debugger alternative to vim-inspector [debugger]
---   --  https://github.com/mfussenegger/nvim-dap
---   --  Here we configure the adapter+config of every debugger.
---   --  Debuggers don't have system dependencies, you just install them with mason.
---   --  We currently ship most of them with nvim.
---   {
---     "mfussenegger/nvim-dap",
---     enabled = vim.fn.has "win32" == 0,
---     event = "User BaseFile",
---     config = function()
---       local dap = require("dap")
-
---       -- C#
---       dap.adapters.coreclr = {
---         type = 'executable',
---         command = vim.fn.stdpath('data') .. '/mason/bin/netcoredbg',
---         args = { '--interpreter=vscode' }
---       }
---       dap.configurations.cs = {
---         {
---           type = "coreclr",
---           name = "launch - netcoredbg",
---           request = "launch",
---           program = function() -- Ask the user what executable wants to debug
---             return vim.fn.input('Path to dll: ', vim.fn.getcwd() .. '/bin/Program.exe', 'file')
---           end,
---         },
---       }
-
---       -- F#
---       dap.configurations.fsharp = dap.configurations.cs
-
---       -- Visual basic dotnet
---       dap.configurations.vb = dap.configurations.cs
-
---       -- Java
---       -- Note: The java debugger jdtls is automatically spawned and configured
---       -- by the plugin 'nvim-java' in './3-dev-core.lua'.
-
---       -- Python
---       dap.adapters.python = {
---         type = 'executable',
---         command = vim.fn.stdpath('data') .. '/mason/packages/debugpy/venv/bin/python',
---         args = { '-m', 'debugpy.adapter' },
---       }
---       dap.configurations.python = {
---         {
---           type = "python",
---           request = "launch",
---           name = "Launch file",
---           program = "${file}", -- This configuration will launch the current file if used.
---         },
---       }
-
---       -- Lua
---       dap.adapters.nlua = function(callback, config)
---         callback({ type = 'server', host = config.host or "127.0.0.1", port = config.port or 8086 })
---       end
---       dap.configurations.lua = {
---         {
---           type = 'nlua',
---           request = 'attach',
---           name = "Attach to running Neovim instance",
---           program = function() pcall(require "osv".launch({ port = 8086 })) end,
---         }
---       }
-
---       -- C
---       dap.adapters.codelldb = {
---         type = 'server',
---         port = "${port}",
---         executable = {
---           command = vim.fn.stdpath('data') .. '/mason/bin/codelldb',
---           args = { "--port", "${port}" },
---           detached = function() if is_windows then return false else return true end end,
---         }
---       }
---       dap.configurations.c = {
---         {
---           name = 'Launch',
---           type = 'codelldb',
---           request = 'launch',
---           program = function() -- Ask the user what executable wants to debug
---             return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/bin/program', 'file')
---           end,
---           cwd = '${workspaceFolder}',
---           stopOnEntry = false,
---           args = {},
---         },
---       }
-
---       -- C++
---       dap.configurations.cpp = dap.configurations.c
-
---       -- Rust
---       dap.configurations.rust = {
---         {
---           name = 'Launch',
---           type = 'codelldb',
---           request = 'launch',
---           program = function() -- Ask the user what executable wants to debug
---             return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/bin/program', 'file')
---           end,
---           cwd = '${workspaceFolder}',
---           stopOnEntry = false,
---           args = {},
---           initCommands = function() -- add rust types support (optional)
---             -- Find out where to look for the pretty printer Python module
---             local rustc_sysroot = vim.fn.trim(vim.fn.system('rustc --print sysroot'))
-
---             local script_import = 'command script import "' .. rustc_sysroot .. '/lib/rustlib/etc/lldb_lookup.py"'
---             local commands_file = rustc_sysroot .. '/lib/rustlib/etc/lldb_commands'
-
---             local commands = {}
---             local file = io.open(commands_file, 'r')
---             if file then
---               for line in file:lines() do
---                 table.insert(commands, line)
---               end
---               file:close()
---             end
---             table.insert(commands, 1, script_import)
-
---             return commands
---           end,
---         }
---       }
 
 --       -- Go
 --       -- Requires:
 --       -- * You have initialized your module with 'go mod init module_name'.
 --       -- * You :cd your project before running DAP.
+--        https://github.com/leoluz/nvim-dap-go/blob/main/README.md#configuring
 --       dap.adapters.delve = {
 --         type = 'server',
 --         port = '${port}',
@@ -353,118 +381,4 @@ return {
 --       -- dap.configurations.javascript = dap.configurations.typescript
 --       -- dap.configurations.javascriptreact = dap.configurations.typescript
 --       -- dap.configurations.typescriptreact = dap.configurations.typescript
-
---       -- PHP
---       dap.adapters.php = {
---         type = 'executable',
---         command = vim.fn.stdpath("data") .. '/mason/bin/php-debug-adapter',
---       }
---       dap.configurations.php = {
---         {
---           type = 'php',
---           request = 'launch',
---           name = 'Listen for Xdebug',
---           port = 9000
---         }
---       }
-
---       -- Shell
---       dap.adapters.bashdb = {
---         type = 'executable',
---         command = vim.fn.stdpath("data") .. '/mason/packages/bash-debug-adapter/bash-debug-adapter',
---         name = 'bashdb',
---       }
---       dap.configurations.sh = {
---         {
---           type = 'bashdb',
---           request = 'launch',
---           name = "Launch file",
---           showDebugOutput = true,
---           pathBashdb = vim.fn.stdpath("data") .. '/mason/packages/bash-debug-adapter/extension/bashdb_dir/bashdb',
---           pathBashdbLib = vim.fn.stdpath("data") .. '/mason/packages/bash-debug-adapter/extension/bashdb_dir',
---           trace = true,
---           file = "${file}",
---           program = "${file}",
---           cwd = '${workspaceFolder}',
---           pathCat = "cat",
---           pathBash = "/bin/bash",
---           pathMkfifo = "mkfifo",
---           pathPkill = "pkill",
---           args = {},
---           env = {},
---           terminalKind = "integrated",
---         }
---       }
-
---       -- Elixir
---       dap.adapters.mix_task = {
---         type = 'executable',
---         command = vim.fn.stdpath("data") .. '/mason/bin/elixir-ls-debugger',
---         args = {}
---       }
---       dap.configurations.elixir = {
---         {
---           type = "mix_task",
---           name = "mix test",
---           task = 'test',
---           taskArgs = { "--trace" },
---           request = "launch",
---           startApps = true, -- for Phoenix projects
---           projectDir = "${workspaceFolder}",
---           requireFiles = {
---             "test/**/test_helper.exs",
---             "test/**/*_test.exs"
---           }
---         },
---       }
---     end, -- of dap config
---     dependencies = {
---       "rcarriga/nvim-dap-ui",
---       "rcarriga/cmp-dap",
---       "jay-babu/mason-nvim-dap.nvim",
---       "jbyuki/one-small-step-for-vimkind",
---       "nvim-java/nvim-java",
---     },
---   },
-
---   -- nvim-dap-ui [dap ui]
---   -- https://github.com/mfussenegger/nvim-dap-ui
---   -- user interface for the debugger dap
---   {
---     "rcarriga/nvim-dap-ui",
---     dependencies = { "nvim-neotest/nvim-nio" },
---     opts = { floating = { border = "rounded" } },
---     config = function(_, opts)
---       local dap, dapui = require("dap"), require("dapui")
---       dap.listeners.after.event_initialized["dapui_config"] = function(
---       )
---         dapui.open()
---       end
---       dap.listeners.before.event_terminated["dapui_config"] = function(
---       )
---         dapui.close()
---       end
---       dap.listeners.before.event_exited["dapui_config"] = function()
---         dapui.close()
---       end
---       dapui.setup(opts)
---     end,
---   },
-
---   -- cmp-dap [dap autocomplete]
---   -- https://github.com/mfussenegger/cmp-dap
---   -- Enables autocomplete for the debugger dap.
---   {
---     "rcarriga/cmp-dap",
---     dependencies = { "nvim-cmp" },
---     config = function()
---       require("cmp").setup.filetype(
---         { "dap-repl", "dapui_watches", "dapui_hover" },
---         {
---           sources = {
---             { name = "dap" },
---           },
---         }
---       )
---     end,
 --   },

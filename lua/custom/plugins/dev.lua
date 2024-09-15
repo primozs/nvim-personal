@@ -50,8 +50,9 @@ return {
   -- lsp_signature.nvim [auto params help]
   -- https://github.com/ray-x/lsp_signature.nvim
   {
-    'ray-x/lsp_signature.nvim',
-    event = 'BufEnter',
+    -- 'ray-x/lsp_signature.nvim',
+    'primozs/lsp_signature.nvim',
+    event = "VeryLazy",
     opts = function()
       -- Apply globals from 1-options.lua
       local is_enabled = true
@@ -271,4 +272,10 @@ return {
       }
     end,
   },
+
+  {
+    'mrcjkb/rustaceanvim',
+    version = '^5', -- Recommended
+    lazy = false, -- This plugin is already lazy
+  }
 }

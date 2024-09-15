@@ -163,23 +163,23 @@ return {
   -- guttentags_plus [auto generate C/C++ tags]
   -- https://github.com/skywind3000/gutentags_plus
   -- This plugin is necessary for using <C-]> (go to ctag).
-  {
-    "skywind3000/gutentags_plus",
-    ft = { "c", "cpp" },
-    dependencies = { "ludovicchabant/vim-gutentags" },
-    config = function()
-      -- NOTE: On vimplugins we use config instead of opts.
-      vim.g.gutentags_plus_nomap = 1
-      vim.g.gutentags_resolve_symlinks = 1
-      vim.g.gutentags_cache_dir = vim.fn.stdpath "cache" .. "/tags"
-      vim.api.nvim_create_autocmd("FileType", {
-        desc = "Auto generate C/C++ tags",
-        callback = function()
-          local is_c = vim.bo.filetype == "c" or vim.bo.filetype == "cpp"
-          if is_c then vim.g.gutentags_enabled = 1
-          else vim.g.gutentags_enabled = 0 end
-        end,
-      })
-    end,
-  },
+  -- {
+  --   "skywind3000/gutentags_plus",
+  --   ft = { "c", "cpp" },
+  --   dependencies = { "ludovicchabant/vim-gutentags" },
+  --   config = function()
+  --     -- NOTE: On vimplugins we use config instead of opts.
+  --     vim.g.gutentags_plus_nomap = 1
+  --     vim.g.gutentags_resolve_symlinks = 1
+  --     vim.g.gutentags_cache_dir = vim.fn.stdpath "cache" .. "/tags"
+  --     vim.api.nvim_create_autocmd("FileType", {
+  --       desc = "Auto generate C/C++ tags",
+  --       callback = function()
+  --         local is_c = vim.bo.filetype == "c" or vim.bo.filetype == "cpp"
+  --         if is_c then vim.g.gutentags_enabled = 1
+  --         else vim.g.gutentags_enabled = 0 end
+  --       end,
+  --     })
+  --   end,
+  -- },
 }
