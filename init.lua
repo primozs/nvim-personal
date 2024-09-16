@@ -110,8 +110,15 @@ vim.keymap.set('n', '<S-TAB>', '<<', { noremap = true, silent = true })
 -- vim.keymap.set('x', '<C-I>', '<leader>f', { noremap = true, silent = true })
 -- vim.keymap.set('x', '<C-A>', 'gcc', { noremap = true })
 
+-- nnoremap <A-j> :m .+1<CR>==
+-- nnoremap <A-k> :m .-2<CR>==
+-- inoremap <A-j> <Esc>:m .+1<CR>==gi
+-- inoremap <A-k> <Esc>:m .-2<CR>==gi
+-- vnoremap <A-j> :m '>+1<CR>gv=gv
+-- vnoremap <A-k> :m '<-2<CR>gv=gv
 vim.keymap.set('v', 'J', ":m '>+1<CR>gv=gv", { desc = 'Move line down' })
 vim.keymap.set('v', 'K', ":m '<-2<CR>gv=gv", { desc = 'Move line up' })
+vim.keymap.set({ 'n', 'v' }, 'gj', ':j<cr>', { desc = 'Join line' })
 vim.keymap.set('n', '<leader>zig', '<cmd>LspRestart<cr>')
 
 vim.keymap.set('x', '<leader>p', [["_dP]])
@@ -130,10 +137,10 @@ vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagn
 vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
 
 -- TIP: Disable arrow keys in normal mode
-vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
-vim.keymap.set('n', '<right>', '<cmd>echo "Use l to move!!"<CR>')
-vim.keymap.set('n', '<up>', '<cmd>echo "Use k to move!!"<CR>')
-vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
+-- vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
+-- vim.keymap.set('n', '<right>', '<cmd>echo "Use l to move!!"<CR>')
+-- vim.keymap.set('n', '<up>', '<cmd>echo "Use k to move!!"<CR>')
+-- vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
 
 -- Keybinds to make split navigation easier.
 --  Use CTRL+<hjkl> to switch between windows
@@ -156,6 +163,18 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   callback = function()
     vim.highlight.on_yank()
   end,
+})
+
+-- vim.api.nvim_create_autocmd('VimEnter', {
+vim.api.nvim_create_autocmd('InsertEnter', {
+  pattern = "*",
+  command = "silent! !setxkbmap -option caps:escape",
+})
+
+-- vim.api.nvim_create_autocmd('VimLeave', {
+vim.api.nvim_create_autocmd('InsertLeave', {
+  pattern = "*",
+  command = "silent! !setxkbmap -option"
 })
 
 -- [[ Install `lazy.nvim` plugin manager ]]
