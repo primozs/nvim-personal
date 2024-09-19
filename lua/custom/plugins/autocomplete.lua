@@ -1,5 +1,12 @@
 -- Autocompletion
 -- https://smarttech101.com/nvim-lsp-autocompletion-mapping-snippets-fuzzy-search/#formatting_in_nvimlsp_autocompletion
+
+-- make your one for nimble
+-- https://github.com/hrsh7th/cmp-path/tree/main
+-- https://github.com/Snikimonkd/cmp-go-pkgs
+-- https://www.jonashietala.se/blog/2024/05/26/autocomplete_with_nvim-cmp/
+-- https://github.com/uga-rosa/cmp-dynamic
+
 local kind_icons = {
   Class = "ﴯ",
   Color = "",
@@ -100,7 +107,7 @@ return {
       --  into multiple repos for maintenance purposes.
       'hrsh7th/cmp-nvim-lsp',
       'f3fora/cmp-spell',
-      'hrsh7th/cmp-nvim-lsp-signature-help',
+      -- 'hrsh7th/cmp-nvim-lsp-signature-help',
       'hrsh7th/cmp-path',
       'hrsh7th/cmp-cmdline'
     },
@@ -206,25 +213,25 @@ return {
             group_index = 0,
           },
           { name = 'nvim_lsp', priority = 1000 },
-          { name = 'nvim_lsp_signature_help', priority = 750 },
+          -- { name = 'nvim_lsp_signature_help', priority = 750 },
           { name = 'luasnip', priority = 750 },
           { name = 'buffer', priority = 500 },
           { name = 'path', priority = 250 }
         }),
       }
 
-      cmp.setup.cmdline(':', {
-        sources = cmp.config.sources({
-          { name = 'path' },
-          { name = 'cmdline' },
-        })
-      })
+      -- cmp.setup.cmdline(':', {
+      --   sources = cmp.config.sources({
+      --     { name = 'path' },
+      --     { name = 'cmdline' },
+      --   })
+      -- })
 
-      cmp.setup.cmdline({'/', '?'}, {
-        sources = {
-          { name = 'buffer' },
-        }
-      })
+      -- cmp.setup.cmdline({'/', '?'}, {
+      --   sources = {
+      --     { name = 'buffer' },
+      --   }
+      -- })
     end,
   },
 }

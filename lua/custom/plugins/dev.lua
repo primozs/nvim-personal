@@ -52,26 +52,7 @@ return {
   {
     'ray-x/lsp_signature.nvim',
     -- 'primozs/lsp_signature.nvim',
-    event = "VeryLazy",
-    config = function()
-      local is_enabled = true
-      local round_borders = {}
-      round_borders = { border = 'rounded' }
-
-      require("lsp_signature").on_attach({
-            -- Window mode
-        floating_window = is_enabled, -- Display it as floating window.
-        hi_parameter = 'IncSearch', -- Color to highlight floating window.
-        handler_opts = round_borders, -- Window style
-
-        -- Hint mode
-        hint_enable = false, -- Display it as hint.
-        hint_prefix = '👈 ',
-
-        -- Additionally, you can use <space>uH to toggle inlay hints.
-        toggle_key_flip_floatwin_setting = is_enabled,
-      })
-    end
+    event = "VeryLazy"
   },
 
   {
@@ -169,28 +150,28 @@ return {
   { 'vim-test/vim-test' },
 
   -- https://github.com/folke/trouble.nvim
-  {
-    'folke/trouble.nvim',
-    config = function()
-      require('trouble').setup {
-        icons = false,
-      }
+  -- {
+  --   'folke/trouble.nvim',
+  --   config = function()
+  --     require('trouble').setup {
+  --       icons = false,
+  --     }
 
-      vim.keymap.set('n', '<leader>tt', function()
-        require('trouble').toggle()
-      end)
+  --     vim.keymap.set('n', '<leader>tt', function()
+  --       require('trouble').toggle()
+  --     end)
 
-      vim.keymap.set('n', '[t', function()
-        require('trouble').next { skip_groups = true, jump = true }
-      end,
-      { desc = 'Previous trouble' })
+  --     vim.keymap.set('n', '[t', function()
+  --       require('trouble').next { skip_groups = true, jump = true }
+  --     end,
+  --     { desc = 'Previous trouble' })
 
-      vim.keymap.set('n', ']t', function()
-        require('trouble').previous { skip_groups = true, jump = true }
-      end,
-      { desc = 'Next trouble' })
-    end,
-  },
+  --     vim.keymap.set('n', ']t', function()
+  --       require('trouble').previous { skip_groups = true, jump = true }
+  --     end,
+  --     { desc = 'Next trouble' })
+  --   end,
+  -- },
 
   {
     'ThePrimeagen/harpoon',
@@ -270,9 +251,9 @@ return {
     end,
   },
 
-  {
-    'mrcjkb/rustaceanvim',
-    version = '^5', -- Recommended
-    lazy = false, -- This plugin is already lazy
-  }
+  -- {
+  --   'mrcjkb/rustaceanvim',
+  --   version = '^5', -- Recommended
+  --   lazy = false, -- This plugin is already lazy
+  -- }
 }
