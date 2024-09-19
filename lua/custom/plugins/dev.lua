@@ -50,16 +50,16 @@ return {
   -- lsp_signature.nvim [auto params help]
   -- https://github.com/ray-x/lsp_signature.nvim
   {
-    -- 'ray-x/lsp_signature.nvim',
-    'primozs/lsp_signature.nvim',
+    'ray-x/lsp_signature.nvim',
+    -- 'primozs/lsp_signature.nvim',
     event = "VeryLazy",
-    opts = function()
-      -- Apply globals from 1-options.lua
+    config = function()
       local is_enabled = true
       local round_borders = {}
       round_borders = { border = 'rounded' }
-      return {
-        -- Window mode
+
+      require("lsp_signature").on_attach({
+            -- Window mode
         floating_window = is_enabled, -- Display it as floating window.
         hi_parameter = 'IncSearch', -- Color to highlight floating window.
         handler_opts = round_borders, -- Window style
@@ -70,11 +70,8 @@ return {
 
         -- Additionally, you can use <space>uH to toggle inlay hints.
         toggle_key_flip_floatwin_setting = is_enabled,
-      }
-    end,
-    config = function(_, opts)
-      require('lsp_signature').setup(opts)
-    end,
+      })
+    end
   },
 
   {

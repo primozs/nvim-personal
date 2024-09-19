@@ -118,6 +118,24 @@ return {
     end,
   },
 
+  -- { "catppuccin/nvim",
+  --   name = "catppuccin",
+  --   priority = 1000,
+  --   opts = {
+  --     -- flavour = "auto"
+  --     -- flavour = "latte"
+  --     -- flavour = "frappe"
+  --     flavour = "macchiato"
+  --     -- flavour = "mocha"
+  --   },
+  --   setup = function(_, opts)
+  --     require("catppuccin").setup(opts)
+  --     -- vim.cmd.colorscheme "catppuccin"
+  --     vim.cmd.colorscheme = "macchiato"
+  --     vim.cmd.hi 'Comment gui=none'
+  --   end,
+  -- },
+
   --   https://github.com/nvie/vim-oceanic-next?tab=readme-ov-file
   -- {
   --   'mhartington/oceanic-next',
@@ -165,7 +183,7 @@ return {
         diagnostic = true,
         gitsigns = true, -- gitsigns integration (display hunks)
         ale = true,      -- lsp integration (display errors/warnings)
-        search = true,  -- hlslens integration (display search result)
+        search = false,  -- hlslens integration (display search result)
       },
       excluded_filetypes = {
         "cmp_docs",
@@ -212,33 +230,10 @@ return {
   --  LSP icons [icons]
   --  https://github.com/onsails/lspkind.nvim
   -- {
-  --   "onsails/lspkind.nvim",
-  --   opts = {
-  --     -- mode = "symbol",
-  --     -- symbol_map = {
-  --     --   Array = "󰅪",
-  --     --   Boolean = "⊨",
-  --     --   Class = "󰌗",
-  --     --   Constructor = "",
-  --     --   Key = "󰌆",
-  --     --   Namespace = "󰅪",
-  --     --   Null = "NULL",
-  --     --   Number = "#",
-  --     --   Object = "󰀚",
-  --     --   Package = "󰏗",
-  --     --   Property = "",
-  --     --   Reference = "",
-  --     --   Snippet = "",
-  --     --   String = "󰀬",
-  --     --   TypeParameter = "󰊄",
-  --     --   Unit = "",
-  --     -- },
-  --     -- menu = {},
-  --   },
-  --   enabled = true,
-  --   config = function(_, opts)
-  --     require("lspkind").init(opts)
-  --   end,
+  --   "onsails/lspkind.nvim"   
+  -- },
+  -- {
+  --   'lambdalisue/vim-nerdfont'
   -- },
 
   -- {
