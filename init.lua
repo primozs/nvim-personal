@@ -112,8 +112,12 @@ vim.keymap.set('n', '<C-q>', '<cmd>q<CR>', { noremap = true })
 vim.keymap.set('n', '<leader>e', '<cmd>Vex<CR>', { noremap = true })
 -- vim.keymap.set('n', '\\', '<cmd>Rexplore<CR>', { noremap = true })
 vim.keymap.set('n', '<leader>vr', '<cmd>so ~/.config/nvim/init.lua<CR>', { noremap = true, silent = true })
+
 vim.keymap.set('n', '<TAB>', '>>', { noremap = true, silent = true })
 vim.keymap.set('n', '<S-TAB>', '<<', { noremap = true, silent = true })
+vim.keymap.set('v', '<TAB>', ">gv", { noremap = true, silent = true })
+vim.keymap.set('v', '<S-TAB>', "<gv", { noremap = true, silent = true })
+vim.keymap.set('i', '<S-TAB>', "<C-D>", { noremap = true, silent = true })
 
 -- vim.keymap.set('x', '<C-I>', '<leader>f', { noremap = true, silent = true })
 -- vim.keymap.set('x', '<C-A>', 'gcc', { noremap = true })
@@ -128,6 +132,30 @@ vim.keymap.set('v', 'J', ":m '>+1<CR>gv=gv", { desc = 'Move line down' })
 vim.keymap.set('v', 'K', ":m '<-2<CR>gv=gv", { desc = 'Move line up' })
 vim.keymap.set({ 'n', 'v' }, 'gj', ':j<cr>', { desc = 'Join line' })
 vim.keymap.set('n', '<leader>zig', '<cmd>LspRestart<cr>')
+
+-- local get_lsp_client = function()
+--   -- Get lsp client for current buffer
+--   local buf_ft = vim.api.nvim_buf_get_option(0, 'filetype')
+--   local clients = vim.lsp.get_active_clients()
+--   if next(clients) == nil then
+--     return nil
+--   end
+
+--   for _, client in ipairs(clients) do
+--     local filetypes = client.config.filetypes
+--     if filetypes and vim.fn.index(filetypes,buf_ft) ~= -1 then
+--       return client
+--     end
+--   end
+
+--   return nil
+-- end
+
+-- vim.keymap.set('n', '<leader>zir', function()
+--   local bufnr = vim.api.nvim_get_current_buf()
+--   local client = get_lsp_client()
+--   vim.lsp.buf_attach_client(bufnr, client)
+-- end)
 
 vim.keymap.set('x', '<leader>p', [["_dP]])
 vim.keymap.set('n', '<leader>Y', [["+Y]])
@@ -173,14 +201,14 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   end,
 })
 
--- vim.api.nvim_create_autocmd('VimEnter', {
-vim.api.nvim_create_autocmd('InsertEnter', {
+vim.api.nvim_create_autocmd('VimEnter', {
+-- vim.api.nvim_create_autocmd('InsertEnter', {
   pattern = '*',
   command = 'silent! !setxkbmap -option caps:escape',
 })
 
--- vim.api.nvim_create_autocmd('VimLeave', {
-vim.api.nvim_create_autocmd('InsertLeave', {
+vim.api.nvim_create_autocmd('VimLeave', {
+-- vim.api.nvim_create_autocmd('InsertLeave', {
   pattern = '*',
   command = 'silent! !setxkbmap -option',
 })
@@ -215,7 +243,7 @@ require('lazy').setup({
 
       -- Useful status updates for LSP.
       -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
-      -- { 'j-hui/fidget.nvim', opts = {} },
+      { 'j-hui/fidget.nvim', opts = {} },
 
       -- Allows extra capabilities provided by nvim-cmp
       'hrsh7th/cmp-nvim-lsp',
@@ -234,9 +262,11 @@ require('lazy').setup({
       vim.api.nvim_create_autocmd('LspAttach', {
         group = vim.api.nvim_create_augroup('kickstart-lsp-attach', { clear = true }),
         callback = function(event)
-          require("lsp_signature").on_attach({
-            floating_window = true
-          })
+          -- vim.lsp.inlay_hint.enable(true, { bufnr = event.buf })
+          -- require("lsp_signature").on_attach({
+          --   floating_window = true
+          -- })
+
           -- NOTE: Remember that Lua is a real programming language, and as such it is possible
           -- to define small helper and utility functions so you don't have to repeat yourself.
           --
@@ -246,6 +276,8 @@ require('lazy').setup({
             mode = mode or 'n'
             vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
           end
+
+          vim.keymap.set('n', '<leader>zii', '<cmd>LspInfo<CR>', { buffer = event.buf, desc = 'LSP: info'})
 
           -- Jump to the definition of the word under your cursor.
           --  This is where a variable was first declared, or where a function is defined, etc.
@@ -277,6 +309,7 @@ require('lazy').setup({
           map('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
 
           map('gh', vim.lsp.buf.hover, 'Code hint')
+          map('gs', vim.lsp.buf.signature_help, 'Signature help')
 
           -- Execute a code action, usually your cursor needs to be on top of an error
           -- or a suggestion from your LSP for this to activate.
@@ -358,17 +391,27 @@ require('lazy').setup({
         ts_ls = {}, -- tsserver
         volar = {},
         -- https://github.com/nim-lang/langserver
-        -- nimls = {},
+        -- nimls = {
+        --   -- filetypes = { 'nim' },
+        --   -- root_dir = utils.root_pattern '*.nimble',
+        --   -- settings = {
+        --   --   nim = {
+        --   --     nimsuggestPath = '~/.nimble/bin/nimsuggest',
+        --   --   },
+        --   -- },
+        --   -- -- https://forum.nim-lang.org/t/10403
+        --   -- capabilities = capabilities,  
+        -- },
         nim_langserver = {
-          filetypes = { 'nim' },
-          root_dir = utils.root_pattern '*.nimble',
-          settings = {
-            nim = {
-              nimsuggestPath = '~/.nimble/bin/nimsuggest',
-            },
-          },
-          -- https://forum.nim-lang.org/t/10403
-          capabilities = capabilities,
+          -- filetypes = { 'nim' },
+          -- root_dir = utils.root_pattern '*.nimble',
+          -- settings = {
+          --   nim = {
+          --     nimsuggestPath = '~/.nimble/bin/nimsuggest',
+          --   },
+          -- },
+          -- -- https://forum.nim-lang.org/t/10403
+          -- capabilities = capabilities,
         },
         bashls = {},
         cmake = {},
@@ -581,6 +624,8 @@ require('lazy').setup({
   -- require 'kickstart.plugins.indent_line',
   require 'kickstart.plugins.lint',
   require 'kickstart.plugins.nim',
+  require 'kickstart.plugins.cloak',
+  require 'kickstart.plugins.zenmode',
 
   { import = 'custom.plugins' },
 }, {

@@ -6,33 +6,34 @@
 -- https://github.com/Snikimonkd/cmp-go-pkgs
 -- https://www.jonashietala.se/blog/2024/05/26/autocomplete_with_nvim-cmp/
 -- https://github.com/uga-rosa/cmp-dynamic
+-- nim dump, nimble dump
 
 local kind_icons = {
-  Class = "ﴯ",
-  Color = "",
-  Constant = "",
-  Constructor = "",
-  Enum = "",
-  EnumMember = "",
-  Event = "",
-  Field = "",
-  File = "",
-  Folder = "",
-  Function = "",
-  Interface = "",
-  Keyword = "",
-  Method = "",
-  Module = "",
-  Operator = "",
-  Property = "ﰠ",
-  Reference = "",
-  Snippet = "",
-  Struct = "",
-  Text = "",
-  TypeParameter = "",
-  Unit = "",
-  Value = "",
-  Variable = "",
+  Class = 'ﴯ',
+  Color = '',
+  Constant = '',
+  Constructor = '',
+  Enum = '',
+  EnumMember = '',
+  Event = '',
+  Field = '',
+  File = '',
+  Folder = '',
+  Function = '',
+  Interface = '',
+  Keyword = '',
+  Method = '',
+  Module = '',
+  Operator = '',
+  Property = 'ﰠ',
+  Reference = '',
+  Snippet = '',
+  Struct = '',
+  Text = '',
+  TypeParameter = '',
+  Unit = '',
+  Value = '',
+  Variable = '',
 }
 
 return {
@@ -81,10 +82,10 @@ return {
           end, { 'vscode', 'snipmate', 'lua' })
 
           -- https://github.com/L3MON4D3/LuaSnip/blob/master/DOC.md#loaders
-          require("luasnip.loaders.from_vscode").load_standalone({
-            language = "nim",
-            path = "~/.config/nvim/snippets/nim.json"
-          })
+          require('luasnip.loaders.from_vscode').load_standalone {
+            language = 'nim',
+            path = '~/.config/nvim/snippets/nim.json',
+          }
 
           -- friendly-snippets - enable standardized comments snippets
           require('luasnip').filetype_extend('typescript', { 'tsdoc' })
@@ -109,7 +110,7 @@ return {
       'f3fora/cmp-spell',
       -- 'hrsh7th/cmp-nvim-lsp-signature-help',
       'hrsh7th/cmp-path',
-      'hrsh7th/cmp-cmdline'
+      'hrsh7th/cmp-cmdline',
     },
     config = function()
       -- See `:help cmp`
@@ -117,29 +118,29 @@ return {
       local luasnip = require 'luasnip'
       luasnip.config.setup {}
 
-      cmp.setup {        
+      cmp.setup {
         snippet = {
           expand = function(args)
             luasnip.lsp_expand(args.body)
           end,
         },
-        
+
         formatting = {
           format = function(entry, vim_item)
             -- Kind icons
-            vim_item.kind = string.format("%s %s", kind_icons[vim_item.kind], vim_item.kind) --Concatonate the icons with name of the item-kind
+            vim_item.kind = string.format('%s %s', kind_icons[vim_item.kind], vim_item.kind) --Concatonate the icons with name of the item-kind
             vim_item.menu = ({
-              nvim_lsp = "[LSP]",
-              spell = "[Spellings]",
-              zsh = "[Zsh]",
-              buffer = "[Buffer]",
-              ultisnips = "[Snip]",
-              treesitter = "[Treesitter]",
-              calc = "[Calculator]",
-              nvim_lua = "[Lua]",
-              path = "[Path]",
-              nvim_lsp_signature_help = "[Signature]",
-              cmdline = "[Vim Command]"
+              nvim_lsp = '[LSP]',
+              spell = '[Spellings]',
+              zsh = '[Zsh]',
+              buffer = '[Buffer]',
+              ultisnips = '[Snip]',
+              treesitter = '[Treesitter]',
+              calc = '[Calculator]',
+              nvim_lua = '[Lua]',
+              path = '[Path]',
+              nvim_lsp_signature_help = '[Signature]',
+              cmdline = '[Vim Command]',
             })[entry.source.name]
             return vim_item
           end,
@@ -149,24 +150,24 @@ return {
           disallow_fuzzy_matching = false,
         },
 
-        completion = { 
+        completion = {
           completeopt = 'menu,menuone,noinsert',
           keyword_length = 1,
         },
 
         -- For an understanding of why these mappings were
-        -- chosen, you will need to read `:help ins-completion`    
+        -- chosen, you will need to read `:help ins-completion`
         mapping = cmp.mapping.preset.insert {
           -- Select the [n]ext item
-          ['<C-n>'] = cmp.mapping(cmp.mapping.select_next_item(), {'i', 'c'}),
-          
+          ['<C-n>'] = cmp.mapping(cmp.mapping.select_next_item(), { 'i', 'c' }),
+
           -- Select the [p]revious item
-          ['<C-p>'] = cmp.mapping(cmp.mapping.select_prev_item(), {'i', 'c'}),
+          ['<C-p>'] = cmp.mapping(cmp.mapping.select_prev_item(), { 'i', 'c' }),
 
           -- Scroll the documentation window [b]ack / [f]orward
-          ['<C-u>'] = cmp.mapping(cmp.mapping.scroll_docs(-4), {'i', 'c'}),
+          ['<C-u>'] = cmp.mapping(cmp.mapping.scroll_docs(-4), { 'i', 'c' }),
 
-          ['<C-d>'] = cmp.mapping(cmp.mapping.scroll_docs(4), {'i', 'c'}),
+          ['<C-d>'] = cmp.mapping(cmp.mapping.scroll_docs(4), { 'i', 'c' }),
 
           -- Accept ([y]es) the completion.
           --  This will auto-import if your LSP supports it.
@@ -182,7 +183,7 @@ return {
           -- Manually trigger a completion from nvim-cmp.
           --  Generally you don't need this, because nvim-cmp will display
           --  completions whenever it has completion options available.
-          ['<C-Space>'] = cmp.mapping(cmp.mapping.complete(), {'i', 'c'}),
+          ['<C-Space>'] = cmp.mapping(cmp.mapping.complete(), { 'i', 'c' }),
 
           -- Think of <c-l> as moving to the right of your snippet expansion.
           --  So if you have a snippet that's like:
@@ -206,7 +207,7 @@ return {
           -- For more advanced Luasnip keymaps (e.g. selecting choice nodes, expansion) see:
           --    https://github.com/L3MON4D3/LuaSnip?tab=readme-ov-file#keymaps
         },
-        sources = cmp.config.sources( {
+        sources = cmp.config.sources {
           {
             name = 'lazydev',
             -- set group index to 0 to skip loading LuaLS completions as lazydev recommends it
@@ -216,22 +217,22 @@ return {
           -- { name = 'nvim_lsp_signature_help', priority = 750 },
           { name = 'luasnip', priority = 750 },
           { name = 'buffer', priority = 500 },
-          { name = 'path', priority = 250 }
-        }),
+          { name = 'path', priority = 250 },
+        },
       }
 
-      -- cmp.setup.cmdline(':', {
-      --   sources = cmp.config.sources({
-      --     { name = 'path' },
-      --     { name = 'cmdline' },
-      --   })
-      -- })
+      cmp.setup.cmdline(':', {
+        sources = cmp.config.sources({
+          { name = 'path' },
+          { name = 'cmdline' },
+        })
+      })
 
-      -- cmp.setup.cmdline({'/', '?'}, {
-      --   sources = {
-      --     { name = 'buffer' },
-      --   }
-      -- })
+      cmp.setup.cmdline({'/', '?'}, {
+        sources = {
+          { name = 'buffer' },
+        }
+      })
     end,
   },
 }

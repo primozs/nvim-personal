@@ -49,11 +49,11 @@ return {
 
   -- lsp_signature.nvim [auto params help]
   -- https://github.com/ray-x/lsp_signature.nvim
-  {
-    'ray-x/lsp_signature.nvim',
-    -- 'primozs/lsp_signature.nvim',
-    event = "VeryLazy"
-  },
+  -- {
+  --   'ray-x/lsp_signature.nvim',
+  --   -- 'primozs/lsp_signature.nvim',
+  --   event = "VeryLazy"
+  -- },
 
   {
     'RishabhRD/nvim-cheat.sh',

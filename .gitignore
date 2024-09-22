@@ -3,5 +3,5 @@ test.sh
 .luarc.json
 nvim
 material
-spell/
+# spell/
 # lazy-lock.json
