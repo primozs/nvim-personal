@@ -226,11 +226,57 @@ end ---@diagnostic disable-next-line: undefined-field
 vim.opt.rtp:prepend(lazypath)
 
 require('lazy').setup({
-  -- For example, in the following configuration, we use:
-  --  event = 'VimEnter'
-  --
-  -- which loads before all the UI elements are loaded. Events can be
-  -- normal autocommands events (`:help autocmd-events`).
+  -- Detect tabstop and shiftwidth automatically
+  -- 'tpope/vim-sleuth', 
+  
+  -- Highlight todo, notes, etc in comments
+  {
+    'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false }
+  },
+
+  {
+    "cappyzawa/trim.nvim",
+    event = "BufWrite",
+    opts = {
+      trim_on_write = true,
+      trim_trailing = true,
+      trim_last_line = false,
+      trim_first_line = false,
+    },
+  },
+
+  -- ts-comments.nvim [treesitter comments]
+  -- https://github.com/folke/ts-comments.nvim
+  -- This plugin can be safely removed after nvim 0.11 is released.
+  {
+    "folke/ts-comments.nvim",
+     event = "User BaseFile",
+     enabled = vim.fn.has("nvim-0.10.0") == 1,
+     opts = {},
+  },
+
+  {
+    -- You can easily change to a different colorscheme.
+    -- Change the name of the colorscheme plugin below, and then
+    -- change the command in the config to whatever the name of that colorscheme is.
+    --
+    -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
+    'folke/tokyonight.nvim',
+    priority = 1000, -- Make sure to load this before all the other start plugins.    
+    init = function()
+      -- Load the colorscheme here.
+      -- Like many other themes, this one has different styles, and you could load
+      -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
+      vim.opt.termguicolors = true
+      vim.cmd.colorscheme 'tokyonight-night'
+      --      vim.cmd.colorscheme 'tokyonight-moon'
+
+      -- You can configure highlights by doing something like:
+      -- vim.cmd.hi 'Comment gui=none'
+      -- vim.api.nvim_set_hl(0, "Normal", { bg = "none" })
+	    -- vim.api.nvim_set_hl(0, "NormalFloat", { bg = "none" })
+    end,
+  },
 
   -- LSP Plugins
   {
@@ -531,7 +577,7 @@ require('lazy').setup({
           inherit = true,
           command = 'nimpretty',
           prepend_args = {
-            '--indent:3',
+            '--indent:2',
             '--maxLineLen:80',
           },
         },
@@ -620,12 +666,31 @@ require('lazy').setup({
     --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
   },
 
-  require 'kickstart.plugins.debug',
-  -- require 'kickstart.plugins.indent_line',
+
   require 'kickstart.plugins.lint',
   require 'kickstart.plugins.nim',
   require 'kickstart.plugins.cloak',
   require 'kickstart.plugins.zenmode',
+  require 'kickstart.plugins.vim_be_good',
+  require 'kickstart.plugins.harpoon',
+  require 'kickstart.plugins.trouble',
+  require 'kickstart.plugins.telescope',
+  require 'kickstart.plugins.tiny_diagnostics',
+  require 'kickstart.plugins.scrollbar',
+  require 'kickstart.plugins.neo_tree',
+  require 'kickstart.plugins.which_key',
+  require 'kickstart.plugins.web_dev_icons',
+  require 'kickstart.plugins.mini',  
+  require 'kickstart.plugins.compile',
+  require 'kickstart.plugins.debug',
+  require 'kickstart.plugins.test',  
+  require 'kickstart.plugins.render_markdown',
+  require 'kickstart.plugins.typescript',
+  require 'kickstart.plugins.nvimlua',
+  require 'kickstart.plugins.java',
+  require 'kickstart.plugins.cheet',
+  -- require 'kickstart.plugins.indent_line',
+
 
   { import = 'custom.plugins' },
 }, {
