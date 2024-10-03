@@ -633,7 +633,9 @@ require('lazy').setup({
   require 'kickstart.plugins.undotree',
 
   require 'kickstart.plugins.tabby',
-  require 'kickstart.plugins.gen',
+  require 'kickstart.plugins.local',
+
+  -- require 'kickstart.plugins.gen',
   -- require 'kickstart.plugins.model',
   -- require 'kickstart.plugins.ollama_copilot',
   -- require 'kickstart.plugins.indent_line',
