@@ -1,8 +1,48 @@
+-- https://github.com/pmizio/typescript-tools.nvim
+
 return {
   {
     'pmizio/typescript-tools.nvim',
     dependencies = { 'nvim-lua/plenary.nvim', 'neovim/nvim-lspconfig' },
     opts = {},
+    servers = {
+      tsservercontext = {},
+    },
+
+    setup = {
+      tsservercontext = function(_, opts)
+        local neoconf = require("neoconf")
+        local lspconfig = require("lspconfig")
+
+        if neoconf.get("is-volar-project") then
+          lspconfig["volar"].setup({
+            server = opts,
+            settings = {},
+          })
+
+          require("typescript-tools").setup({
+            server = opts,
+            settings = {
+              tsserver_plugins = {
+                "@vue/typescript-plugin",
+              },
+            },
+            filetypes = {
+              "javascript",
+              "typescript",
+              "vue",
+            },
+          })
+        else
+          require("typescript-tools").setup({
+            server = opts,
+          })
+        end
+
+        return true
+      end,
+    },
+
   },
 
   -- autopairs

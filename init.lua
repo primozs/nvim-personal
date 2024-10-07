@@ -245,16 +245,6 @@ require('lazy').setup({
     },
   },
 
-  -- ts-comments.nvim [treesitter comments]
-  -- https://github.com/folke/ts-comments.nvim
-  -- This plugin can be safely removed after nvim 0.11 is released.
-  {
-    "folke/ts-comments.nvim",
-     event = "User BaseFile",
-     enabled = vim.fn.has("nvim-0.10.0") == 1,
-     opts = {},
-  },
-
   {
     -- You can easily change to a different colorscheme.
     -- Change the name of the colorscheme plugin below, and then
@@ -279,6 +269,7 @@ require('lazy').setup({
   },
 
   -- LSP Plugins
+  -- {"artemave/workspace-diagnostics.nvim"},
   {
     'neovim/nvim-lspconfig',
     dependencies = {
@@ -422,7 +413,6 @@ require('lazy').setup({
       --  - capabilities (table): Override fields in capabilities. Can be used to disable certain LSP features.
       --  - settings (table): Override the default settings passed when initializing the server.
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
-      local utils = require('lspconfig').util
       local servers = {
         clangd = {},
         gopls = {},
@@ -434,7 +424,7 @@ require('lazy').setup({
         --    https://github.com/pmizio/typescript-tools.nvim
         --
         -- But for many setups, the LSP (`tsserver`) will work just fine
-        ts_ls = {}, -- tsserver
+        -- ts_ls = {}, -- tsserver
         volar = {},
         -- https://github.com/nim-lang/langserver
         -- nimls = {
@@ -467,11 +457,22 @@ require('lazy').setup({
         -- dartls = {},
         docker_compose_language_service = {},
         dockerls = {},
-        emmet_language_server = {},
-        -- eslint = {},
+        emmet_language_server = {
+          filetypes = { '*.html'}
+        },
+        eslint = {
+          settings = {
+            validate = "on",
+            packageManager = "yarn", -- or 'npm'
+          },    
+        },
         gradle_ls = {},
-        html = {},
-        htmx = {},
+        html = {
+          filetypes = { '*.html'}
+        },
+        htmx = {
+          filetypes = { '*.html'}
+        },
         -- java_language_server = {},
         jinja_lsp = {},
         jsonls = {},
@@ -523,6 +524,11 @@ require('lazy').setup({
           end,
         },
       }
+      -- require('lspconfig').eslint.setup({
+      --   on_attach = function(client, bufnr)
+      --                 require("workspace-diagnostics").populate_workspace_diagnostics(client, bufnr)
+      --               end
+      -- })
     end,
   },
 
@@ -631,6 +637,7 @@ require('lazy').setup({
   require 'kickstart.plugins.java',
   require 'kickstart.plugins.cheet',  
   require 'kickstart.plugins.undotree',
+  require 'kickstart.plugins.lazygit',
 
   require 'kickstart.plugins.tabby',
   require 'kickstart.plugins.local',
