@@ -424,8 +424,35 @@ require('lazy').setup({
         --    https://github.com/pmizio/typescript-tools.nvim
         --
         -- But for many setups, the LSP (`tsserver`) will work just fine
-        -- ts_ls = {}, -- tsserver
-        volar = {},
+
+        -- https://github.com/pmizio/typescript-tools.nvim
+        -- https://github.com/pmizio/typescript-tools.nvim/issues/290
+        -- https://www.npmjs.com/package/@vue/typescript-plugin
+        -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/configs.md
+        -- ts_ls = {
+        --   init_options = {
+        --     plugins = {
+        --       {
+        --         name = "@vue/typescript-plugin",
+        --         location = "~/.nvm/versions/node/v20.10.0/lib/node_modules/@vue/typescript-plugin",
+        --         languages = {"javascript", "typescript", "vue"},
+        --       },
+        --     },
+        --   },
+        --   filetypes = {
+        --     "javascript",
+        --     "typescript",
+        --     "vue",
+        --   },
+        -- }, -- tsserver
+        volar = {
+          filetypes = { 'vue' },
+          init_options = {
+            vue = {
+              hybridMode = false,
+            },
+          },
+        },
         -- https://github.com/nim-lang/langserver
         -- nimls = {
         --   -- filetypes = { 'nim' },
