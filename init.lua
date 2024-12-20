@@ -42,12 +42,12 @@ vim.opt.mouse = 'a'
 vim.opt.showmode = false
 
 -- https://github.com/neovim/neovim/pull/16600
-vim.filetype.add({
+vim.filetype.add {
   extension = {
     -- nimble = "txt",
     -- nims = "txt",
   },
-})
+}
 
 -- Sync clipboard between OS and Neovim.
 --  Schedule the setting after `UiEnter` because it can increase startup-time.
@@ -115,9 +115,9 @@ vim.keymap.set('n', '<leader>vr', '<cmd>so ~/.config/nvim/init.lua<CR>', { norem
 
 vim.keymap.set('n', '<TAB>', '>>', { noremap = true, silent = true })
 vim.keymap.set('n', '<S-TAB>', '<<', { noremap = true, silent = true })
-vim.keymap.set('v', '<TAB>', ">gv", { noremap = true, silent = true })
-vim.keymap.set('v', '<S-TAB>', "<gv", { noremap = true, silent = true })
-vim.keymap.set('i', '<S-TAB>', "<C-D>", { noremap = true, silent = true })
+vim.keymap.set('v', '<TAB>', '>gv', { noremap = true, silent = true })
+vim.keymap.set('v', '<S-TAB>', '<gv', { noremap = true, silent = true })
+vim.keymap.set('i', '<S-TAB>', '<C-D>', { noremap = true, silent = true })
 
 -- vim.keymap.set('x', '<C-I>', '<leader>f', { noremap = true, silent = true })
 -- vim.keymap.set('x', '<C-A>', 'gcc', { noremap = true })
@@ -202,13 +202,13 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 })
 
 vim.api.nvim_create_autocmd('VimEnter', {
--- vim.api.nvim_create_autocmd('InsertEnter', {
+  -- vim.api.nvim_create_autocmd('InsertEnter', {
   pattern = '*',
   command = 'silent! !setxkbmap -option caps:escape',
 })
 
 vim.api.nvim_create_autocmd('VimLeave', {
--- vim.api.nvim_create_autocmd('InsertLeave', {
+  -- vim.api.nvim_create_autocmd('InsertLeave', {
   pattern = '*',
   command = 'silent! !setxkbmap -option',
 })
@@ -227,16 +227,19 @@ vim.opt.rtp:prepend(lazypath)
 
 require('lazy').setup({
   -- Detect tabstop and shiftwidth automatically
-  -- 'tpope/vim-sleuth', 
-  
+  -- 'tpope/vim-sleuth',
+
   -- Highlight todo, notes, etc in comments
   {
-    'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false }
+    'folke/todo-comments.nvim',
+    event = 'VimEnter',
+    dependencies = { 'nvim-lua/plenary.nvim' },
+    opts = { signs = false },
   },
 
   {
-    "cappyzawa/trim.nvim",
-    event = "BufWrite",
+    'cappyzawa/trim.nvim',
+    event = 'BufWrite',
     opts = {
       trim_on_write = true,
       trim_trailing = true,
@@ -252,7 +255,7 @@ require('lazy').setup({
     --
     -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
     'folke/tokyonight.nvim',
-    priority = 1000, -- Make sure to load this before all the other start plugins.    
+    priority = 1000, -- Make sure to load this before all the other start plugins.
     init = function()
       -- Load the colorscheme here.
       -- Like many other themes, this one has different styles, and you could load
@@ -264,7 +267,7 @@ require('lazy').setup({
       -- You can configure highlights by doing something like:
       -- vim.cmd.hi 'Comment gui=none'
       -- vim.api.nvim_set_hl(0, "Normal", { bg = "none" })
-	    -- vim.api.nvim_set_hl(0, "NormalFloat", { bg = "none" })
+      -- vim.api.nvim_set_hl(0, "NormalFloat", { bg = "none" })
     end,
   },
 
@@ -314,7 +317,7 @@ require('lazy').setup({
             vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
           end
 
-          vim.keymap.set('n', '<leader>zii', '<cmd>LspInfo<CR>', { buffer = event.buf, desc = 'LSP: info'})
+          vim.keymap.set('n', '<leader>zii', '<cmd>LspInfo<CR>', { buffer = event.buf, desc = 'LSP: info' })
 
           -- Jump to the definition of the word under your cursor.
           --  This is where a variable was first declared, or where a function is defined, etc.
@@ -463,7 +466,7 @@ require('lazy').setup({
         --   --   },
         --   -- },
         --   -- -- https://forum.nim-lang.org/t/10403
-        --   -- capabilities = capabilities,  
+        --   -- capabilities = capabilities,
         -- },
         nim_langserver = {
           -- filetypes = { 'nim' },
@@ -485,20 +488,20 @@ require('lazy').setup({
         docker_compose_language_service = {},
         dockerls = {},
         emmet_language_server = {
-          filetypes = { '*.html'}
+          filetypes = { '*.html' },
         },
         eslint = {
           settings = {
-            validate = "on",
-            packageManager = "yarn", -- or 'npm'
-          },    
+            validate = 'on',
+            packageManager = 'yarn', -- or 'npm'
+          },
         },
         gradle_ls = {},
         html = {
-          filetypes = { '*.html'}
+          filetypes = { '*.html' },
         },
         htmx = {
-          filetypes = { '*.html'}
+          filetypes = { '*.html' },
         },
         -- java_language_server = {},
         jinja_lsp = {},
@@ -662,7 +665,7 @@ require('lazy').setup({
   require 'kickstart.plugins.typescript',
   require 'kickstart.plugins.nvimlua',
   require 'kickstart.plugins.java',
-  require 'kickstart.plugins.cheet',  
+  require 'kickstart.plugins.cheet',
   require 'kickstart.plugins.undotree',
   require 'kickstart.plugins.lazygit',
 
@@ -673,7 +676,6 @@ require('lazy').setup({
   -- require 'kickstart.plugins.model',
   -- require 'kickstart.plugins.ollama_copilot',
   -- require 'kickstart.plugins.indent_line',
-
 
   { import = 'custom.plugins' },
 }, {
