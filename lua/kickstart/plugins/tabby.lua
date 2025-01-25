@@ -1,4 +1,3 @@
-
 -- vim.g.tabby_server_url = "http://127.0.0.1:9090"
 -- vim.g.tabby_node_binary = vim.fn.expand("~/.nvm/versions/node/v20.10.0/bin/node")
 -- vim.g.tabby_trigger_mode = "manual"
@@ -6,7 +5,7 @@
 -- vim.g.tabby_keybinding_trigger_or_dismiss = "<C-l>"
 
 return {
-  {"github/copilot.vim"}
+  -- {"github/copilot.vim"}
   -- {
   --   "TabbyML/vim-tabby",
   --   cmd = "Tabby",
@@ -18,12 +17,12 @@ return {
   --   init = function()
   --     -- vim.g.tabby_server_url = "http://127.0.0.1:9090"
   --     vim.g.tabby_node_binary = vim.fn.expand("~/.nvm/versions/node/v20.10.0/bin/node")
-      
+
   --     vim.g.tabby_agent_start_command = {"npx", "tabby-agent", "--stdio"}
   --     vim.g.tabby_inline_completion_trigger = "manual"
 
   --     -- vim.g.tabby_trigger_mode = "manual"
-  --     vim.g.tabby_inline_completion_keybinding_accept = "<Tab>" 
+  --     vim.g.tabby_inline_completion_keybinding_accept = "<Tab>"
   --     vim.g.tabby_inline_completion_keybinding_trigger_or_dismiss = '<C-\\>'
   --   end,
   --   keys = {
@@ -57,7 +56,7 @@ return {
 
   --     provider = "deepseekcoder",
   --     auto_suggestions_provider = "deepseekcoder",
-      
+
   --     claude = {
   --       endpoint = "https://api.anthropic.com",
   --       model = "claude-3-5-sonnet-20240620",
@@ -66,7 +65,7 @@ return {
   --       max_tokens = 8000,
   --       ["local"] = false,
   --     },
-  --     vendors = {      
+  --     vendors = {
   --         ---@type AvanteProvider
   --         ollama_deepseekcoder2 = {
   --           ["local"] = true,
