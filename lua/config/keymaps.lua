@@ -4,5 +4,23 @@
 
 local map = LazyVim.safe_keymap_set
 
-map('n', '<C-q>', '<cmd>q<CR>', { noremap = true })
-map('i', 'jk', '<ESC>', { noremap = true })
+-- move buffer lines
+-- map("n", "<C-H>", "<cmd>BufferLineMovePrev<CR>", { noremap = true })
+-- map("n", "<C-L>", "<cmd>BufferLineMoveNext<CR>", { noremap = true })
+
+-- exit insert mode
+map("i", "jk", "<ESC>", { noremap = true })
+
+map("n", "gh", function()
+  return vim.lsp.buf.hover()
+end, { desc = "Hover" })
+
+-- map visual block not working problem terminal is using ctrlv to paste
+-- <C-V> works
+-- map("n", "<C-v>", "<C-v>", { noremap = true, desc = "Visual Block mode" })
+
+-- delete buffer
+-- map("n", "<C-q>", ":bdelete<CR>", { noremap = true })
+map("n", "<C-q>", function()
+  Snacks.bufdelete()
+end, { desc = "Delete Buffer" })
