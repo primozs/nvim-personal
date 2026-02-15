@@ -8,17 +8,26 @@ return {
       linters = {
         swiftlint = {
           cmd = "swiftlint",
-          stdin_filename = function()
-            return vim.fn.expand("%")
-          end,
-          args = { "lint", "--use-stdin" },
+          args = { "lint", "--use-stdin", "--reporter", "json" },
+          stdin_filename = vim.fn.expand("%"),
           stream = "stdout",
           ignore_exitcode = true,
-          parser = require("lint.parser").from_pattern(
-            "([^:]+):(%d+):(%d+): ([^:]+): (.*)",
-            { "file", "lnum", "col", "severity", "message" },
-            { severity = require("lint").severities }
-          ),
+          parser = function(output)
+            local diagnostics = {}
+            local ok, data = pcall(vim.json.decode, output)
+            if ok and data then
+              for _, issue in ipairs(data) do
+                table.insert(diagnostics, {
+                  lnum = issue.line - 1,
+                  col = issue.character - 1,
+                  message = issue.reason,
+                  severity = issue.severity:upper() == "ERROR" and vim.diagnostic.severity.ERROR
+                    or vim.diagnostic.severity.WARN,
+                })
+              end
+            end
+            return diagnostics
+          end,
         },
       },
     },
