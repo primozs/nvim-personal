@@ -24,3 +24,5 @@ end, { desc = "Hover" })
 map("n", "<C-q>", function()
   Snacks.bufdelete()
 end, { desc = "Delete Buffer" })
+
+map("t", "<C-n>", "<C-\\><C-N>", { noremap = true, silent = true })
