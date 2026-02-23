@@ -5,6 +5,8 @@ return {
       formatters_by_ft = {
         swift = { "swiftformat" },
         mojo = { "mojo" },
+        -- vue = { "biome" },
+        vue = { "prettier" },
       },
       formatters = {
         swiftformat = {
