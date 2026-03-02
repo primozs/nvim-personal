@@ -7,6 +7,18 @@ local map = LazyVim.safe_keymap_set
 -- move buffer lines
 -- map("n", "<C-H>", "<cmd>BufferLineMovePrev<CR>", { noremap = true })
 -- map("n", "<C-L>", "<cmd>BufferLineMoveNext<CR>", { noremap = true })
+vim.api.nvim_set_keymap(
+  "n",
+  "<A-h>",
+  "<cmd>BufferLineMovePrev<CR>",
+  { noremap = true, silent = true, desc = "Move tab left" }
+)
+vim.api.nvim_set_keymap(
+  "n",
+  "<A-l>",
+  "<cmd>BufferLineMoveNext<CR>",
+  { noremap = true, silent = true, desc = "Move tab right" }
+)
 
 -- exit insert mode
 map("i", "jk", "<ESC>", { noremap = true })
