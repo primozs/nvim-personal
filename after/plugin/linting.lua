@@ -14,6 +14,8 @@ lint.linters.swiftlint = {
     "--config",
     ".swiftlint.yml",
     "--quiet",
+    -- "--force-exclude", -- Forces respect of excluded: paths
+    -- "--path",
   },
   stream = "stdout",
   ignore_exitcode = true,
