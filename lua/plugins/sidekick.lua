@@ -89,13 +89,46 @@ end
 
 local SUBMIT_DELAY_BASE = 250
 local SUBMIT_DELAY_LARGE = 400
+local SUBMIT_RETRY_MS = 200
+local SUBMIT_MAX_ATTEMPTS = 5
+
+local SEARCH_OUTPUT_RULES = require("sidekick.files").SEARCH_OUTPUT_RULES
 
 local function submit_delay(opts)
   local msg = opts.msg or ""
-  if msg:find("{buffer") or opts.prompt == "explain" or opts.prompt == "fix" or opts.prompt == "diagnostics" then
+  if
+    msg:find("{buffer")
+    or opts.prompt == "explain"
+    or opts.prompt == "fix"
+    or opts.prompt == "diagnostics"
+    or opts.prompt == "search_here"
+    or msg:find("<TaskDescription>", 1, true)
+  then
     return SUBMIT_DELAY_LARGE
   end
   return SUBMIT_DELAY_BASE
+end
+
+--- Try to submit the pending prompt; retry until Sidekick is attached.
+---@param attempt integer
+local function try_submit(attempt)
+  local submitted = false
+  require("sidekick.cli.state").with(function(state)
+    local term = state.terminal
+    if term and term.job and term:is_running() then
+      vim.api.nvim_chan_send(term.job, "\r")
+      submitted = true
+    elseif state.session and state.session.submit then
+      state.session:submit()
+      submitted = true
+    end
+  end, { attach = false })
+
+  if not submitted and attempt < SUBMIT_MAX_ATTEMPTS then
+    vim.defer_fn(function()
+      try_submit(attempt + 1)
+    end, SUBMIT_RETRY_MS)
+  end
 end
 
 --- Send a message to Sidekick, then auto-submit after a short delay.
@@ -104,14 +137,7 @@ local function send_and_submit(opts)
   require("sidekick.cli").send(vim.tbl_extend("force", opts, { submit = false }))
 
   vim.defer_fn(function()
-    require("sidekick.cli.state").with(function(state)
-      local term = state.terminal
-      if term and term.job and term:is_running() then
-        vim.api.nvim_chan_send(term.job, "\r")
-      elseif state.session and state.session.submit then
-        state.session:submit()
-      end
-    end, { attach = false })
+    try_submit(1)
   end, submit_delay(opts))
 end
 
@@ -196,6 +222,8 @@ return {
       opts.cli.prompts = vim.tbl_extend("force", opts.cli.prompts or {}, {
         explain = "Explain the following:\n{buffer}",
         fix = "Fix the following:\n{buffer_selection|buffer}",
+        search_here = SEARCH_OUTPUT_RULES
+          .. "\n\n<Task>\nFind files in this project related to this location or selection:\n{this}\n</Task>",
       })
     end,
     -- stylua: ignore
@@ -209,8 +237,15 @@ return {
       { "<leader>at", function() send_paste({ msg = "{this}" }) end,       mode = { "n", "x" }, desc = "Send This" },
       { "<leader>af", function() send_paste({ msg = "{file}" }) end,       mode = "n",          desc = "Send File" },
       { "<leader>av", function() send_paste({ msg = "{selection}" }) end, mode = "x",          desc = "Send Visual Selection" },
+      { "<leader>aS", function() require("sidekick.files").search_general() end, mode = "n",    desc = "AI Search" },
+      { "<leader>aH", function() require("sidekick.files").search_here() end,  mode = { "n", "v" }, desc = "AI Search Here" },
+      { "<leader>ao", function() require("sidekick.files").collect_results() end, mode = "n", desc = "AI Open Search Results" },
     },
     config = function(_, opts)
+      require("sidekick.files").setup({
+        send = send_and_submit,
+        submit_delay = submit_delay,
+      })
       require("sidekick").setup(opts)
       require("sidekick.nes").disable()
       -- LazyVim's sidekick extra registers this toggle in its opts function.
