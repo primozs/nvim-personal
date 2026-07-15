@@ -225,6 +225,16 @@ return {
         search_here = SEARCH_OUTPUT_RULES
           .. "\n\n<Task>\nFind files in this project related to this location or selection:\n{this}\n</Task>",
       })
+
+      opts.cli.tools = vim.tbl_extend("force", opts.cli.tools or {}, {
+        ["pi-hub"] = {},
+        pi = {
+          is_proc = function(_, proc)
+            local re = vim.regex("\\<pi\\>")
+            return re:match_str(proc.cmd) ~= nil and proc.cmd:find("agent-hub", 1, true) == nil
+          end,
+        },
+      })
     end,
     -- stylua: ignore
     keys = {
