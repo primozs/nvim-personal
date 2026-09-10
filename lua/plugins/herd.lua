@@ -40,6 +40,7 @@ return {
         pi = { cmd = { "pi" } },
         -- claude = { cmd = { "claude" } },
         cursor = { cmd = { "cursor-agent" }, kind = "cursor" },
+        codex = { cmd = { "codex" }, kind = "codex" },
       },
       keys = {
         -- Sidekick-shaped: hh toggle panel / send selection; hs pick or spawn agent
