@@ -59,13 +59,4 @@ return {
       vim.keymap.set("n", "<leader>hS", global_picker, { desc = "herd: all projects" })
     end,
   },
-  {
-    -- Runs in every nvim; alerts when a herdr agent (any repo) is done or blocked.
-    name = "herd-status-notify",
-    dir = vim.fn.stdpath("config"),
-    lazy = false,
-    config = function()
-      require("herd.status_notify").start({ interval_ms = 2000 })
-    end,
-  },
 }
