@@ -35,7 +35,8 @@ return {
     dependencies = { "folke/sidekick.nvim" },
     opts = {
       mode = "float", -- PTY host mode; display is patched to right split below
-      -- workspace is set dynamically per git root (see herd.project_workspace)
+      -- agent host workspace = herd:<git-root> (see herd.project_workspace; must
+      -- not match the editor workspace or float prune closes the nvim tab)
       tools = {
         pi = { cmd = { "pi" } },
         -- claude = { cmd = { "claude" } },
@@ -54,18 +55,10 @@ return {
     },
     config = function(_, opts)
       require("herd").setup(opts)
+      require("herd.compat").apply() -- herdr ≥ 0.9: attach --takeover + detected agents
       require("herd.project_workspace").apply()
       require("herd.split_terminal").apply({ width = sidekick_split_width() })
       vim.keymap.set("n", "<leader>hS", global_picker, { desc = "herd: all projects" })
-    end,
-  },
-  {
-    -- Runs in every nvim; alerts when a herdr agent (any repo) is done or blocked.
-    name = "herd-status-notify",
-    dir = vim.fn.stdpath("config"),
-    lazy = false,
-    config = function()
-      require("herd.status_notify").start({ interval_ms = 2000 })
     end,
   },
 }
