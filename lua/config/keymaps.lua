@@ -40,4 +40,12 @@ end, { desc = "Delete Buffer" })
 map("t", "<C-n>", "<C-\\><C-N>", { noremap = true, silent = true, desc = "Terminal to normal mode" })
 map("n", "<leader>cX", "<cmd>LspRestart<cr>", { noremap = true, desc = "Lsp restart" })
 
-vim.keymap.set("n", "<C-f>", "<cmd>silent !tmux neww tmux-sessionizer<CR>")
+-- Bash herdr-sessionizer (same as shell Ctrl+f). noice <c-f> disabled in
+-- plugins/herdr-sessionizer.lua. Needs a real TTY for fzf — do not use silent
+-- (silent :! has no TTY → herdr-sessionizer exits instantly). Snacks.terminal
+-- gives a pty; auto_close when the CLI exits.
+vim.schedule(function()
+  vim.keymap.set("n", "<C-f>", function()
+    Snacks.terminal({ "herdr-sessionizer" }, { auto_close = true, interactive = true })
+  end, { desc = "herdr-sessionizer" })
+end)
