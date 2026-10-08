@@ -40,6 +40,11 @@ end, { desc = "Delete Buffer" })
 map("t", "<C-n>", "<C-\\><C-N>", { noremap = true, silent = true, desc = "Terminal to normal mode" })
 map("n", "<leader>cX", "<cmd>LspRestart<cr>", { noremap = true, desc = "Lsp restart" })
 
+-- SI layout: / is Shift+7, so Ctrl+/ is awkward; bind Ctrl+7 like LazyVim's <C-/>
+map({ "n", "t" }, "<C-7>", function()
+  Snacks.terminal.focus(nil, { cwd = LazyVim.root() })
+end, { desc = "Terminal (Root Dir)" })
+
 -- Bash herdr-sessionizer (same as shell Ctrl+f). noice <c-f> disabled in
 -- plugins/herdr-sessionizer.lua. Needs a real TTY for fzf — do not use silent
 -- (silent :! has no TTY → herdr-sessionizer exits instantly). Snacks.terminal
