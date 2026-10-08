@@ -4,10 +4,13 @@
 
 vim.g.lazyvim_prettier_needs_config = true
 
--- LazyVim clears clipboard when SSH_CONNECTION is set so OSC 52 can take over.
--- This machine often has a local X11 session (:1) even when SSH_CONNECTION is
--- set (herdr / remote attach), so prefer xclip against that display. Fall back
--- to OSC 52 for true remote terminals.
+-- Clipboard routing:
+-- - Local desktop: use the normal provider (xclip / wl-copy) against DISPLAY.
+-- - SSH or Herdr: prefer OSC 52 copy so yanks reach the *attached client's*
+--   clipboard. Herdr panes often inherit a stale local DISPLAY and never get
+--   SSH_CONNECTION (env is frozen at server start), so DISPLAY must not win
+--   over HERDR_ENV. Herdr does not answer OSC 52 paste queries — paste from
+--   the unnamed register only, or the outer terminal's native paste.
 local function detect_display()
   if vim.env.DISPLAY and vim.env.DISPLAY ~= "" then
     return vim.env.DISPLAY
@@ -30,20 +33,20 @@ local function detect_display()
   return nil
 end
 
+local in_herdr = vim.env.HERDR_ENV == "1" or (vim.env.HERDR_PANE_ID or "") ~= ""
+local in_ssh = vim.env.SSH_CONNECTION ~= nil or vim.env.SSH_TTY ~= nil
 local display = detect_display()
-if display then
-  vim.env.DISPLAY = display
-  vim.opt.clipboard = "unnamedplus"
-elseif vim.env.SSH_CONNECTION or vim.env.SSH_TTY then
+
+local function use_osc52_copy_only()
   vim.opt.clipboard = "unnamedplus"
   local function paste()
     return {
-      vim.fn.split(vim.fn.getreg(""), "\n"),
-      vim.fn.getregtype(""),
+      vim.fn.getreg('"', 1, true),
+      vim.fn.getregtype('"'),
     }
   end
   vim.g.clipboard = {
-    name = "OSC 52",
+    name = "OSC 52 copy-only",
     copy = {
       ["+"] = require("vim.ui.clipboard.osc52").copy("+"),
       ["*"] = require("vim.ui.clipboard.osc52").copy("*"),
@@ -53,6 +56,13 @@ elseif vim.env.SSH_CONNECTION or vim.env.SSH_TTY then
       ["*"] = paste,
     },
   }
+end
+
+if in_herdr or in_ssh then
+  use_osc52_copy_only()
+elseif display then
+  vim.env.DISPLAY = display
+  vim.opt.clipboard = "unnamedplus"
 else
   vim.opt.clipboard = "unnamedplus"
 end
